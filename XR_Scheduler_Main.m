@@ -7,7 +7,8 @@ Burst_Size = traceFile(1 : end, 1);  %Represents the trace burst sizes in Bytes
 t_nxt_frame = traceFile(1 : end, 2); %Represents the time to next arriving frame in seconds
 
 
-n = length(t_nxt_frame);
+%n = length(t_nxt_frame);
+n = 10;
 btime = t_nxt_frame;
 
 q = 0.016;                %quantum time

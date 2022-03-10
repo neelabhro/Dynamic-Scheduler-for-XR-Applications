@@ -2,17 +2,26 @@ clear;
 clc;
 close all;
 
-traceFile = readmatrix('ge_cities_40mbps_60fps');
+%Diving into packet level scheduling, each packet is 1.32kB 
+%Where the data(UDP) payload is 1.278kB
+
+traceFile = readmatrix('ge_cities_40mbps_60fps'); %Google VR trace file
 Burst_Size = traceFile(1 : end, 1);  %Represents the trace burst sizes in Bytes
 t_nxt_frame = traceFile(1 : end, 2); %Represents the time to next arriving frame in seconds
 
+
+n_pack_burst = Burst_Size./1320;       %Number of packets per burst 
+Initial_QoE = floor(n_pack_burst./10); %Preliminarily defining this to be a
+%fraction of the total number of packets encompassing a frame
+plot(1:length(Initial_QoE),Initial_QoE);
+title('QoE variations across varying bursts')
 
 %n = length(t_nxt_frame);
 n = 10;
 btime = t_nxt_frame;
 
-q = 0.016;                %quantum time
-tatime = zeros(1,n);	%turn around time
+q = 0.016;            %quantum time- a round-robin scheduler generally employs time-sharing, giving each job a time slot or quantum
+tatime = zeros(1,n);  %turn around time Net time for the process to be completed
 wtime = zeros(1,n);   %waiting time
 rtime = btime;        %intially remaining time= waiting time
 b = 0;

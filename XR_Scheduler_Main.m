@@ -3,7 +3,7 @@ clc;
 close all;
 
 %Diving into packet level scheduling, each packet is 1.32kB 
-%Where the data(UDP) payload is 1.278kB
+%Where the data(UDP) payload is 1   .278kB
 
 traceFile = readmatrix('ge_cities_40mbps_60fps'); %Google VR trace file
 Burst_Size = traceFile(1 : end, 1);  %Represents the trace burst sizes in Bytes
@@ -11,7 +11,7 @@ t_nxt_frame = traceFile(1 : end, 2); %Represents the time to next arriving frame
 
 
 n_pack_burst = Burst_Size./1320;       %Number of packets per burst 
-Initial_QoE = floor(n_pack_burst./10); %Preliminarily defining this to be a
+Initial_QoE = floor(n_pack_burst./(1000.*t_nxt_frame)); %Preliminarily defining this to be a
 %fraction of the total number of packets encompassing a frame
 plot(1:length(Initial_QoE),Initial_QoE);
 title('QoE variations across varying bursts')

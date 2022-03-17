@@ -12,13 +12,23 @@ t_nxt_frame = traceFile(1 : end, 2); %Represents the time to next arriving frame
 
 n_pack_burst = Burst_Size./1320;       %Number of packets per burst 
 Initial_QoE = floor(n_pack_burst./(1000.*t_nxt_frame)); %Preliminarily defining this to be a
-%fraction of the total number of packets encompassing a frame
+%fraction of the total number of packets encompassing a frame and taking
+%the time to next frame into account as well
+
+%Sort the Scheduled frames according to the QoEs
+[sorted_QoE, sortQoEIdx] = sort(Initial_QoE,'descend');
+%Captures the original indices of the QoE values to find the corresponding
+%frames and times
+%A = find(Initial_QoE==15); Testing the correctness
+sorted_burst = Burst_Size(sortQoEIdx);
+t_sorted_nxt_frame = t_nxt_frame(sortQoEIdx);
+
 plot(1:length(Initial_QoE),Initial_QoE);
 title('QoE variations across varying bursts')
 
 %n = length(t_nxt_frame);
 n = 10;
-btime = t_nxt_frame;
+btime = t_sorted_nxt_frame;
 
 q = 0.016;            %quantum time- a round-robin scheduler generally employs time-sharing, giving each job a time slot or quantum
 tatime = zeros(1,n);  %turn around time Net time for the process to be completed
@@ -33,17 +43,20 @@ for i = 1:1:n         %running the processes for 1 quantum
         for j = 1:1:n
             if(j == i)
                 rtime(i) = rtime(i)-q;    %setting the remaining time if it is the process scheduled
-            else if(rtime(j) > 0)
+            else 
+                if(rtime(j) > 0)
                     wtime(j) = wtime(j)+q;    %incrementing wait time if it is not the process scheduled
                 end
             end
         end
-    else if(rtime(i) > 0)             
+    else 
+        if(rtime(i) > 0)             
             fprintf('P%d\n',i);
             for j = 1:1:n
               if(j == i)
                 rtime(i) = 0;                 %as the remaining time is less than quantum it will run the process and end it
-              else if(rtime(j) > 0)
+              else 
+                  if(rtime(j) > 0)
                     wtime(j) = wtime(j)+rtime(i);     %incrementing wait time if it is not the process scheduled
                   end 
               end
@@ -69,12 +82,14 @@ while(flag == 1)          %if flag is set run the above process again
                     end
                 end
             end
-        else if(rtime(i) > 0)
+        else 
+            if(rtime(i) > 0)
                 fprintf('P%d\n',i);
                 for j = 1:1:n
                     if(j == i)
                         rtime(i) = 0;
-                    else if(rtime(j) > 0)
+                    else 
+                        if(rtime(j) > 0)
                             wtime(j) = wtime(j)+rtime(i);
                         end 
                     end

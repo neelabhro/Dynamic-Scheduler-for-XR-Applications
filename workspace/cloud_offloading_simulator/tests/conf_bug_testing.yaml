@@ -1,0 +1,32 @@
+sys_description: {
+N: 2,
+slot_length: 0.5,
+topology: {type: manhattan, grid_size: 1000},
+lambda_i: {type: uniform, a: 0, b: 0.5},
+
+
+Di: {type: uniform, al: 0.1, au: 1, bl: 1.5, bu: 2.5},
+Li: {type: uniform, al: 0.1, au: 0.5, bl: 1, bu: 0.8},
+Fi: {type: uniform, a: 0.5, b: 1},
+F0: 100,
+Pm_i: {type: uniform, a: 0.1, b: 0.148},
+Um: 0.7,
+Pt_i: 1.3,
+Pe_i: 0.9,
+B: 5,
+fixed_active_area: 1,
+path_loss: 4,
+T: 290,
+b: 1.38065e-23
+}
+
+sim_time: 100000
+
+Algorithms:
+  - name: Global_greedy   
+    #- name: ST_based
+    #update_window: 14.5
+ 
+ 
+#Log_file_path: /home/sladjana/Documents/PhD/lcn_tree/pr_cloud_offloading/simulations/results/wrtN/new/1484825379/.results_1_1.yaml
+#System_path: /home/sladjana/Documents/PhD/lcn_tree/pr_cloud_offloading/simulations/results/wrtN/new/1484825379/.system_1_1.yaml

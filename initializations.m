@@ -44,7 +44,7 @@ A = linspace(1, round(n_pack_burst(2)), round(n_pack_burst(2)));
 s_no = s_no(:).';
 %s_no_numerals = ones(1,length(n_pack_burst));
 s_no_frames = repelem(linspace(1, length(n_pack_burst), length(n_pack_burst)) , column);
-
+t_deadline_packets = randi([-5,5],1,3257124);
 k = find(s_no);
 frame_packet_mapper = transpose([s_no_frames(k); s_no(k)]);
 B = frame_packet_mapper(1:10000,:);

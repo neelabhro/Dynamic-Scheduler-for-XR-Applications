@@ -1,16 +1,41 @@
+clear;
+clc;
 %%Reading the input files and initializing the starting vectors
-traceFile = readmatrix('ge_cities_40mbps_60fps'); %Google VR trace file
-Burst_Size = traceFile(1 : 100, 1);  %Represents the trace burst sizes in Bytes
-t_nxt_frame = traceFile(1 : 100, 2); %Represents the time to next arriving frame in seconds
-t_arrival = zeros(length(t_nxt_frame),1);
+traceFile{1} = readmatrix('ge_cities_40mbps_60fps'); %Google VR trace file
+traceFile{2} = readmatrix('ge_cities_40mbps_30fps'); %Google VR trace file
+num_users = 2;
+num_frame = 100;
+Burst_Size = zeros(num_frame, num_users);
+t_nxt_frame = zeros(num_frame, num_users);
 
-for i=1:length(t_arrival)
-    t_arrival(i+1) = t_nxt_frame(i) + t_arrival(i);
+for i=1:num_users
+    Burst_Size(:,i) = traceFile{i}(1 : num_frame, 1);  %Represents the trace burst sizes in Bytes
+end
+
+for i=1:num_users
+    t_nxt_frame(:,i) = traceFile{i}(1 : num_frame, 2); %Represents the time to next arriving frame in seconds
+end
+
+t_arrival = zeros(length(t_nxt_frame),num_users);
+
+%num_users = ones(length(Burst_Size),1);
+%num_users(length(num_users)/3 +1 : 2*length(num_users)/3) = 2;
+%num_users(2*length(num_users)/3 : end) = 3;
+
+btime = zeros(100,1);
+initial_QoE = ones(100,98);
+for i = 1:length(t_arrival)
+    for j = 1:num_users
+        t_arrival(i+1,j) = t_nxt_frame(i,j) + t_arrival(i,j);
+    end
 end    
-t_arrival = t_arrival(1:length(t_nxt_frame));
-%T_arrival provides the arrival time of all the frames
+
+
+t_arrival = t_arrival(1:length(t_nxt_frame),:);
+%T_arrival provides the arrival time of all the frames, with each column
+%corresponding to each user's frames
 %% Defining variables(num_users etc.)
-n = 10;
+n = num_users;
 q = 0.016;            %quantum time- a round-robin scheduler generally employs time-sharing, giving each job a time slot or quantum
 
 
@@ -34,13 +59,17 @@ q = 0.016;            %quantum time- a round-robin scheduler generally employs t
 
 %% Finding the number of packets per burst and populating the cells accordingly
 n_pack_burst = Burst_Size./1320;       %Number of packets per burst 
-s_no = zeros(length(n_pack_burst),max(round(n_pack_burst))); %Dimensions of
+for i= 1:num_users
+    s_no{i} = zeros(length(n_pack_burst),max(round(n_pack_burst(:,i)))); %Dimensions of
 % s_no are [total_num_frames,frame_with_max_packets]
+end
 
 for i = 1:length(n_pack_burst)
-    s_no(i, 1:max(round(n_pack_burst(i)))) = linspace(1, round(n_pack_burst(i)), round(n_pack_burst(i)));    
+    for j = 1:num_users
+        s_no{j}(i, 1:max(round(n_pack_burst(i)))) = linspace(1, round(n_pack_burst(i)), round(n_pack_burst(i))); 
+    end
 end    
-[row,column] = size(s_no);
+%[row,column] = size(s_no);
 
 %s_no = s_no(:).';
 %s_no_numerals = ones(1,length(n_pack_burst));
@@ -51,9 +80,18 @@ end
 %B = frame_packet_mapper(1:10000,:);
 t_arrival_packet = t_arrival./(round(n_pack_burst));
 ty = t_arrival_packet;
-t_arrival_packet = t_arrival_packet.*s_no;
-t_arrival_packet = t_arrival_packet./s_no;
-t_arrival_packet(isnan(t_arrival_packet))=0;
+for i = 1:num_users
+    t_arrival_pack{i} = t_arrival_packet(:,i).*s_no{i};
+    t_arrival_pack{i} = t_arrival_pack{i}./s_no{i};
+    t_arrival_pack{i}(isnan(t_arrival_pack{i}))=0;
+end
+%t_arrival_pack has as many cells as the number of users
+%Within each cell, is the characteristics of that user
+%Number of rows for a user is the frame number of a packet
+%Number of non-zero columns is the number of packets for that frame
+%The precise entries are the arrival time of that particular packet 
+
+%t_arrival_packet = t_arrival_packet./s_no;
 %for i = 1:length(n_pack_burst)
 %    t_arrival_packet = repelem(t_arrival_packet, (round(n_pack_burst(i))));
 %end    
@@ -61,6 +99,10 @@ packet.frames = num2cell(s_no); %Rows correspond to frame number, columns corres
 p = length(n_pack_burst);
 %[users.delays{:}] = deal(zeros(1,num_frames-prediction_horizon)); 
 packet.arrival = num2cell(t_arrival_packet);
+packet.QoE = num2cell(initial_QoE);
+packet.user = num2cell(ones(size(t_arrival_packet)));
+%%TODO build a multiple user association for the video frames and schedule
+%%accordingly
 %users.packet_throughput = cell(1,num_users); 
  
 %users.delivered_frames = cell(1,num_users);

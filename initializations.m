@@ -66,11 +66,14 @@ end
 
 for i = 1:length(n_pack_burst)
     for j = 1:num_users
-        s_no{j}(i, 1:max(round(n_pack_burst(i)))) = linspace(1, round(n_pack_burst(i)), round(n_pack_burst(i))); 
+        s_no{j}(i, 1:(round(n_pack_burst(i,j)))) = linspace(1, round(n_pack_burst(i,j)), round(n_pack_burst(i,j))); 
     end
 end    
 %[row,column] = size(s_no);
-
+users = s_no;
+for i=1:num_users
+    users{i}(i) = i;
+end    
 %s_no = s_no(:).';
 %s_no_numerals = ones(1,length(n_pack_burst));
 %s_no_frames = repelem(linspace(1, length(n_pack_burst), length(n_pack_burst)) , column);
@@ -78,7 +81,8 @@ end
 %s_no = find(s_no);
 %frame_packet_mapper = transpose([s_no_frames(k); s_no(k)]);
 %B = frame_packet_mapper(1:10000,:);
-t_arrival_packet = t_arrival./(round(n_pack_burst));
+t_arrival_packet = t_arrival./(round(n_pack_burst)); % packets having divided time?
+t_arrival_packet = t_arrival; %All the packets arriving at the same time?
 ty = t_arrival_packet;
 for i = 1:num_users
     t_arrival_pack{i} = t_arrival_packet(:,i).*s_no{i};
@@ -98,9 +102,9 @@ end
 packet.frames = num2cell(s_no); %Rows correspond to frame number, columns correspond to packet number of that frame
 p = length(n_pack_burst);
 %[users.delays{:}] = deal(zeros(1,num_frames-prediction_horizon)); 
-packet.arrival = num2cell(t_arrival_packet);
+packet.arrival = num2cell(t_arrival_pack);
 packet.QoE = num2cell(initial_QoE);
-packet.user = num2cell(ones(size(t_arrival_packet)));
+packet.user = num2cell(users);
 %%TODO build a multiple user association for the video frames and schedule
 %%accordingly
 %users.packet_throughput = cell(1,num_users); 

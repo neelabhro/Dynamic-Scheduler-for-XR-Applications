@@ -87,7 +87,7 @@ ty = t_arrival_packet;
 for i = 1:num_users
     t_arrival_pack{i} = t_arrival_packet(:,i).*s_no{i};
     t_arrival_pack{i} = t_arrival_pack{i}./s_no{i};
-    t_arrival_pack{i}(isnan(t_arrival_pack{i}))=0;
+    %t_arrival_pack{i}(isnan(t_arrival_pack{i}))=0;
 end
 %t_arrival_pack has as many cells as the number of users
 %Within each cell, is the characteristics of that user

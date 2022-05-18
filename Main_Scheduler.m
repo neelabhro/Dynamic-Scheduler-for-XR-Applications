@@ -7,15 +7,19 @@ close all;
 
 initializations
 %Common_Queue = zeros(200,2);
-time_slots = 0:0.034:2;
-Virtual_Queue{1} = zeros(length(time_slots),1);
-Virtual_Queue{2} = zeros(length(time_slots),1);
+time_slots = 0:0.034:3; %Providing 34ms to each time slot, until 3s are elapsed
+for i = 1:num_users
+    Virtual_Queue{i} = zeros(length(time_slots),1);
+end    
+%Virtual_Queue{1} = zeros(length(time_slots),1); %Defining virtual queues for all the users
+%Virtual_Queue{2} = zeros(length(time_slots),1);
 
 for i = 1:length(time_slots)
     for j = 1:num_users
-        if t_arrival(i,j) < time_slots(i)
-            fprintf('Hello')
-            Virtual_Queue{j}(i) = t_arrival(i,j);
+        %if t_arrival(i,j) < time_slots(i) %Arrival condition
+        if packets{j}(i,2) < time_slots(i) %Arrival condition
+            %fprintf('Hello')
+            Virtual_Queue{j}(i) = packets{j}(i,2);
         end    
     end
 end    

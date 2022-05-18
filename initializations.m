@@ -22,7 +22,7 @@ t_arrival = zeros(length(t_nxt_frame),num_users);
 %num_users(length(num_users)/3 +1 : 2*length(num_users)/3) = 2;
 %num_users(2*length(num_users)/3 : end) = 3;
 
-btime = zeros(100,1);
+%btime = zeros(100,1);
 initial_QoE = ones(100,98);
 for i = 1:length(t_arrival)
     for j = 1:num_users
@@ -42,7 +42,8 @@ q = 0.016;            %quantum time- a round-robin scheduler generally employs t
 %Initial_QoE = floor(n_pack_burst./(1000.*t_nxt_frame)); %Preliminarily defining this to be a
 %fraction of the total number of packets encompassing a frame and taking
 %the time to next frame into account as well
-
+QoE = ones(length(t_arrival),num_users);
+QoE(:,2) = 2*QoE(:,2);
 
 %Sort the Scheduled frames according to the QoEs
 %[sorted_QoE, sortQoEIdx] = sort(Initial_QoE,'descend');
@@ -108,5 +109,16 @@ packet.user = num2cell(users);
 %%TODO build a multiple user association for the video frames and schedule
 %%accordingly
 %users.packet_throughput = cell(1,num_users); 
- 
+
+%Column1 = Frame ID
+%Column2 = Frame Deadline
+%Column3 = Num_Packets for that frame
+%Column4 = QoE for that user
+for i = 1:num_users
+    packets{i} = (1:1:length(t_arrival))';
+    packets{i}(:,2) = t_arrival(:,i);
+    packets{i}(:,3) = n_pack_burst(:,i);
+    packets{i}(:,4) = QoE(:,i);
+end    
+
 %users.delivered_frames = cell(1,num_users);

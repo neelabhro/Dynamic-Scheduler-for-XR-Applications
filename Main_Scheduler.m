@@ -19,9 +19,11 @@ for i = 1:length(time_slots)
         %if t_arrival(i,j) < time_slots(i) %Arrival condition
         if packets{j}(i,2) < time_slots(i) %Arrival condition
             %fprintf('Hello')
-            Virtual_Queue{j}(i) = packets{j}(i,2);
+            Virtual_Queue{j}(i) = packets{j}(i,2); %Virtual_Queue{j}(i,2) = packets{j}(i,4);
+            Virtual_Queue{j}(i,2) = packets{j}(i,4);
         end    
     end
+    [scheduled_order, temp_order] = FCFS(Virtual_Queue, num_users);
 end    
 %Initial_Queue = containers.Map(s_no_frames, t_deadline_packets);
 % While new arrival event happens:
@@ -36,8 +38,8 @@ end
 %for i=1:100
 %    btime(i) = packet.arrival{i,1};
 %end
-btime = t_arrival_packet;
-[scheduled_order] = FCFS(btime, num_users);
+%btime = t_arrival_packet;
+
 %[tatime, wtime, b, t] = Round_Robin_Scheduler(btime, n, q);
 %[tatime, wtime, t1, t2] = Scheduler_FCFS(btime, n)
 

@@ -23,7 +23,8 @@ for i = 1:length(time_slots)
             Virtual_Queue{j}(i,2) = packets{j}(i,4);
         end    
     end
-    [scheduled_order, temp_order] = FCFS(Virtual_Queue, num_users);
+    [scheduled_order] = FCFS(Virtual_Queue, num_users);
+    %[scheduled_order] = Round_Robin(Virtual_Queue, num_users, time_slots);
 end    
 %Initial_Queue = containers.Map(s_no_frames, t_deadline_packets);
 % While new arrival event happens:

@@ -117,7 +117,7 @@ packet.user = num2cell(users);
 for i = 1:num_users
     packets{i} = (1:1:length(t_arrival))';
     packets{i}(:,2) = t_arrival(:,i);
-    packets{i}(:,3) = n_pack_burst(:,i);
+    packets{i}(:,3) = round(n_pack_burst(:,i));
     packets{i}(:,4) = QoE(:,i);
 end    
 

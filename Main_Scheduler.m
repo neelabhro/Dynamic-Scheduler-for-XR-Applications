@@ -8,6 +8,8 @@ close all;
 initializations
 %Common_Queue = zeros(200,2);
 time_slots = 0:0.034:3; %Providing 34ms to each time slot, until 3s are elapsed
+time_slots = 0.000125:0.000125:3;
+time_slots = time_slots(5001:5100);
 for i = 1:num_users
     Virtual_Queue{i} = zeros(length(time_slots),1);
 end    
@@ -17,10 +19,12 @@ end
 for i = 1:length(time_slots)
     for j = 1:num_users
         %if t_arrival(i,j) < time_slots(i) %Arrival condition
-        if packets{j}(i,2) < time_slots(i) %Arrival condition
+        for k = 1:packets{j}(i,3)
+            if (packets{j}(i,2)/packets{j}(i,3))*(k+1) < time_slots(i) %Arrival condition
             %fprintf('Hello')
-            Virtual_Queue{j}(i) = packets{j}(i,2); %Virtual_Queue{j}(i,2) = packets{j}(i,4);
-            Virtual_Queue{j}(i,2) = packets{j}(i,4);
+                Virtual_Queue{j}(i) = packets{j}(i,2); %Virtual_Queue{j}(i,2) = packets{j}(i,4);
+                Virtual_Queue{j}(i,2) = packets{j}(i,4);
+            end    
         end    
     end
     [scheduled_order] = FCFS(Virtual_Queue, num_users);

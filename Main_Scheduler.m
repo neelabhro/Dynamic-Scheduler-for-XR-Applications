@@ -9,15 +9,16 @@ initializations
 %Common_Queue = zeros(200,2);
 time_slots = 0:0.034:3; %Providing 34ms to each time slot, until 3s are elapsed
 %time_slots = 0.000125:0.000125:3;
-%time_slots = 0.000125*ones(100,1);
+time_slots = 0.00025*ones(100,1);
 %time_slots = time_slots(5001:5100);
 for i = 1:num_users
     Virtual_Queue{i} = zeros(length(time_slots),2);
+    Dropped_Queue{i} = zeros(length(time_slots),2);
 end    
 %Virtual_Queue{1} = zeros(length(time_slots),1); %Defining virtual queues for all the users
 %Virtual_Queue{2} = zeros(length(time_slots),1);
 
-for i = 1:length(time_slots) -1
+for i = 1:length(time_slots) - 1
     for j = 1:num_users
         %if t_arrival(i,j) < time_slots(i) %Arrival condition
         for k = 1:packets{j}(i,3)
@@ -28,6 +29,11 @@ for i = 1:length(time_slots) -1
                 Virtual_Queue{j}(i) = packets{j}(i,2); %Virtual_Queue{j}(i,2) = packets{j}(i,4);
                 Virtual_Queue{j}(i,2) = packets{j}(i,4);
                 Virtual_Queue{j}(i,3) = k;
+                time_system{j}(i) = packets{j}(i,2) + ((packets{j}(i+1,2) - packets{j}(i,2))/packets{j}(i,3))*(k);
+            else
+                Dropped_Queue{j}(i) = packets{j}(i,2); %Virtual_Queue{j}(i,2) = packets{j}(i,4);
+                Dropped_Queue{j}(i,2) = packets{j}(i,4);
+                Dropped_Queue{j}(i,3) = k;
             end    
         end    
     end

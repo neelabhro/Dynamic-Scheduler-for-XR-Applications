@@ -12,7 +12,7 @@ time_slots = 0:0.034:3; %Providing 34ms to each time slot, until 3s are elapsed
 time_slots = 0.00025*ones(100,1);
 %time_slots = time_slots(5001:5100);
 for i = 1:num_users
-    Virtual_Queue{i} = zeros(length(time_slots),2);
+    %Virtual_Queue{i} = zeros(length(time_slots),2);
     Dropped_Queue{i} = zeros(length(time_slots),2);
 end    
 %Virtual_Queue{1} = zeros(length(time_slots),1); %Defining virtual queues for all the users
@@ -29,6 +29,8 @@ for i = 1:length(time_slots) - 1
                 Virtual_Queue{j}(i) = packets{j}(i,2); %Virtual_Queue{j}(i,2) = packets{j}(i,4);
                 Virtual_Queue{j}(i,2) = packets{j}(i,4);
                 Virtual_Queue{j}(i,3) = k;
+                %Virtual_Queue{j,i}(k) = k;
+               
                 time_system{j}(i) = packets{j}(i,2) + ((packets{j}(i+1,2) - packets{j}(i,2))/packets{j}(i,3))*(k);
             else
                 Dropped_Queue{j}(i) = packets{j}(i,2); %Virtual_Queue{j}(i,2) = packets{j}(i,4);

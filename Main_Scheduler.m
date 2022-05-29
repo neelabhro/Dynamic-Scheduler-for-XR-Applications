@@ -31,7 +31,7 @@ for i = 1:length(time_slots) - 1
                 Virtual_Queue{j}(i,3) = k;
                 %Virtual_Queue{j,i}(k) = k;
                
-                time_system{j}(i) = packets{j}(i,2) + ((packets{j}(i+1,2) - packets{j}(i,2))/packets{j}(i,3))*(k);
+                system_time{j}(i,k) = packets{j}(i,2) + ((packets{j}(i+1,2) - packets{j}(i,2))/packets{j}(i,3))*(k); % Scheduling time + queueing/service time
             else
                 Dropped_Queue{j}(i) = packets{j}(i,2); %Virtual_Queue{j}(i,2) = packets{j}(i,4);
                 Dropped_Queue{j}(i,2) = packets{j}(i,4);

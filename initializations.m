@@ -1,10 +1,11 @@
-clear;
+%clear;
 clc;
 %%Reading the input files and initializing the starting vectors
 traceFile{1} = readmatrix('ge_cities_40mbps_60fps'); %Google VR trace file
 traceFile{2} = readmatrix('ge_cities_40mbps_30fps'); %Google VR trace file
 num_users = 2;
 num_frame = 100;
+time_slots = 0.0000625*ones(num_frame,1);
 Burst_Size = zeros(num_frame, num_users);
 t_nxt_frame = zeros(num_frame, num_users);
 

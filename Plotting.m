@@ -8,14 +8,31 @@ for i = 1:num_users
 end    
 
 for j = 1:num_users
-    plot(average_waiting_time{j});
+    plot(average_waiting_time{j}.*1000);
     title('Average Waiting time per frame for User', j)
     xlabel('Frame number')
-    ylabel('Time in Seconds')
+    ylabel('Time in ms')
     figure;
     plot(average_system_time{j});
     title('Average System time per frame for User', j)
     xlabel('Frame number')
     ylabel('Time in Seconds')
     figure;
-end    
+end
+
+plot( 1:100, Burst_Size(:,1)./1000);
+hold on;
+plot( 1:100, Burst_Size(:,2)./1000);
+title('Frame Size variation across users');
+xlabel('Frame Number');
+ylabel('Frame Size in Kb');
+legend('User 1', 'User 2');
+figure;
+
+
+histogram( Burst_Size(:,1)./1000);
+hold on;
+histogram( Burst_Size(:,2)./1000);
+title('Histogram of frame distibution');
+xlabel('Frame Size in Kb');
+legend('User 1', 'User 2');

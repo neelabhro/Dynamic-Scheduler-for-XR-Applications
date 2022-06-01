@@ -1,5 +1,6 @@
 %clear;
 clc;
+testFile = load('vr_Headset_View_1080p30_30_13000_bytes.mat');
 %%Reading the input files and initializing the starting vectors
 traceFile{1} = readmatrix('ge_cities_40mbps_60fps'); %Google VR trace file
 traceFile{2} = readmatrix('ge_cities_40mbps_30fps'); %Google VR trace file

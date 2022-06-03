@@ -15,8 +15,9 @@ end
 [temp_order, temp_order_indices] = sort(scheduled_order(:,1));
 
 if size(scheduled_order,2) > 1
-    user_order = scheduled_order(:,2);
-    scheduled_order = [scheduled_order(temp_order_indices), user_order(temp_order_indices)];
+    user_order = scheduled_order(:,3);
+    frame_order = scheduled_order(:,2);
+    scheduled_order = [scheduled_order(temp_order_indices), frame_order(temp_order_indices), user_order(temp_order_indices)];
 end    
 %    for j=1:num_users -1
 %        if btime(i,j) > btime(i,j+1)

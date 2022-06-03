@@ -19,16 +19,27 @@ end
 %Virtual_Queue{1} = zeros(length(time_slots),1); %Defining virtual queues for all the users
 %Virtual_Queue{2} = zeros(length(time_slots),1);
 
-for i = 1:length(time_slots) - 1
-    for j = 1:num_users
+%for i = 1:length(time_slots) - 1
+    %for j = 1:num_users
         %if t_arrival(i,j) < time_slots(i) %Arrival condition
-        for k = 1:packets{j}(i,3)
+        %for k = 1:packets{j}(i,3)
             %if packets{j}(i,2) + ((packets{j}(i+1,2) - packets{j}(i,2))/packets{j}(i,3))*(k) > packets{j}(i,2) + k*time_slots(i) %Arrival condition
                 %The t_nxt_frame can be used a frame deadline, by which all
                 %packets need to be delivered
                 %fprintf('Hello')
-                Virtual_Queue{j}(i,k) = packets{j}(i,2); %Virtual_Queue{j}(i,2) = packets{j}(i,4);
-
+                %Virtual_Queue{j}(i,k) = packets{j}(i,2); %Virtual_Queue{j}(i,2) = packets{j}(i,4);
+%num_frame for equals half the number of time slots, represents arrival frames               
+for i = 1:num_frame
+    for j = 1:num_users
+        for k = 1:packets{j}(i,3)
+            packet{j,i}(k,1) = packets{j}(i,2);
+            packet{j,i}(k,2) = i;
+            packet{j,i}(k,3) = packets{j}(i,4);
+        end
+    end   
+end 
+Virtual_Queue{1} = (cat(1, packet{1,:}));
+Virtual_Queue{2} = (cat(1, packet{2,:}));
                 %Virtual_Queue{j}(i,2) = packets{j}(i,4);
                 %Virtual_Queue{j}(i,3) = k;
                 %Virtual_Queue{j,i}(k) = k;
@@ -41,12 +52,17 @@ for i = 1:length(time_slots) - 1
                 %Dropped_Queue{j}(i,2) = packets{j}(i,4);
                 %Dropped_Queue{j}(i,3) = k;
             %end    
-        end    
-    end
-    %Virtual_Queue{j} = Virtual_Queue{j}(:);
+        %end    
+    %end
+    %Virtual_Queue{j} = packet{j};
     %[scheduled_order] = FCFS(Virtual_Queue, num_users);
     %[scheduled_order] = Round_Robin(Virtual_Queue, num_users, time_slots);
-end    
+%end    
+
+%Virtual_Queue{1} = packet{1};
+%Virtual_Queue{2} = packet{2};
+%[scheduled_order] = Round_Robin(Virtual_Queue, num_users, time_slots);
+[scheduled_order] = FCFS(Virtual_Queue, num_users);
 %system_time{2}(system_time{2}==0) = NaN;
 %nonZeroIndexes = system_time{2} ~= 0;
 %average_system_time = mean((system_time{2}(nonZeroIndexes))');

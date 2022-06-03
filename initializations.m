@@ -1,6 +1,6 @@
 %clear;
 clc;
-testFile = load('vr_Headset_View_1080p30_30_13000_bytes.mat');
+testFile = load('vr_Headset_View_1080p30_30_8000_out_bytes.mat');
 %%Reading the input files and initializing the starting vectors
 traceFile{1} = readmatrix('ge_cities_40mbps_60fps'); %Google VR trace file
 traceFile{2} = readmatrix('ge_cities_40mbps_30fps'); %Google VR trace file
@@ -123,16 +123,18 @@ for i = 1:num_users
     packets{i}(:,4) = QoE(:,i);
 end    
 
-for i = 1:num_frame
-    for j = 1:num_users
-        for k = 1:packets{j}(i,3)
-            frame{j,i}(k) = packets{j}(i,2);
-        end
-    end   
-end    
+%for i = 1:num_frame
+%    for j = 1:num_users
+%        for k = 1:packets{j}(i,3)
+%            frame{j,i}(k,1) = packets{j}(i,2);
+            %frame{j,i}(k,2) = i;
+%            frame{j,i}(k,2) = packets{j}(i,4);
+%        end
+%    end   
+%end    
 %C = {cat(1, frame{:})};
 %for i = 1:num_users
-packet{1} = (cat(2, frame{1,:}))';
-packet{2} = (cat(2, frame{2,:}))';
+%packet{1} = (cat(1, frame{1,:}));
+%packet{2} = (cat(1, frame{2,:}));
 %end
     %users.delivered_frames = cell(1,num_users);

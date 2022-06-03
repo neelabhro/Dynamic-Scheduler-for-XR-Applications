@@ -102,12 +102,12 @@ end
 %for i = 1:length(n_pack_burst)
 %    t_arrival_packet = repelem(t_arrival_packet, (round(n_pack_burst(i))));
 %end    
-packet.frames = num2cell(s_no); %Rows correspond to frame number, columns correspond to packet number of that frame
+%packet.frames = num2cell(s_no); %Rows correspond to frame number, columns correspond to packet number of that frame
 p = length(n_pack_burst);
 %[users.delays{:}] = deal(zeros(1,num_frames-prediction_horizon)); 
-packet.arrival = num2cell(t_arrival_pack);
-packet.QoE = num2cell(initial_QoE);
-packet.user = num2cell(users);
+%packet.arrival = num2cell(t_arrival_pack);
+%packet.QoE = num2cell(initial_QoE);
+%packet.user = num2cell(users);
 %%TODO build a multiple user association for the video frames and schedule
 %%accordingly
 %users.packet_throughput = cell(1,num_users); 
@@ -123,4 +123,16 @@ for i = 1:num_users
     packets{i}(:,4) = QoE(:,i);
 end    
 
-%users.delivered_frames = cell(1,num_users);
+for i = 1:num_frame
+    for j = 1:num_users
+        for k = 1:packets{j}(i,3)
+            frame{j,i}(k) = packets{j}(i,2);
+        end
+    end   
+end    
+%C = {cat(1, frame{:})};
+%for i = 1:num_users
+packet{1} = (cat(2, frame{1,:}))';
+packet{2} = (cat(2, frame{2,:}))';
+%end
+    %users.delivered_frames = cell(1,num_users);

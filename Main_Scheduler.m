@@ -23,26 +23,28 @@ for i = 1:length(time_slots) - 1
     for j = 1:num_users
         %if t_arrival(i,j) < time_slots(i) %Arrival condition
         for k = 1:packets{j}(i,3)
-            if packets{j}(i,2) + ((packets{j}(i+1,2) - packets{j}(i,2))/packets{j}(i,3))*(k) > packets{j}(i,2) + k*time_slots(i) %Arrival condition
+            %if packets{j}(i,2) + ((packets{j}(i+1,2) - packets{j}(i,2))/packets{j}(i,3))*(k) > packets{j}(i,2) + k*time_slots(i) %Arrival condition
                 %The t_nxt_frame can be used a frame deadline, by which all
                 %packets need to be delivered
                 %fprintf('Hello')
-                Virtual_Queue{j}(i) = packets{j}(i,2); %Virtual_Queue{j}(i,2) = packets{j}(i,4);
-                Virtual_Queue{j}(i,2) = packets{j}(i,4);
-                Virtual_Queue{j}(i,3) = k;
+                Virtual_Queue{j}(i,k) = packets{j}(i,2); %Virtual_Queue{j}(i,2) = packets{j}(i,4);
+
+                %Virtual_Queue{j}(i,2) = packets{j}(i,4);
+                %Virtual_Queue{j}(i,3) = k;
                 %Virtual_Queue{j,i}(k) = k;
                
                 %system_time{j}(i,k) = packets{j}(i,2) + ((packets{j}(i+1,2) - packets{j}(i,2))/packets{j}(i,3))*(k); % Scheduling time + queueing/service time
-                system_time{j}(i,k) = packets{j}(i,2) + k*time_slots(i); % Scheduling time + queueing/service time
-                waiting_time{j}(i,k) = k*time_slots(i);
-            else
-                Dropped_Queue{j}(i) = packets{j}(i,2); %Virtual_Queue{j}(i,2) = packets{j}(i,4);
-                Dropped_Queue{j}(i,2) = packets{j}(i,4);
-                Dropped_Queue{j}(i,3) = k;
-            end    
+                %system_time{j}(i,k) = packets{j}(i,2) + k*time_slots(i); % Scheduling time + queueing/service time
+                %waiting_time{j}(i,k) = k*time_slots(i);
+            %else
+                %Dropped_Queue{j}(i) = packets{j}(i,2); %Virtual_Queue{j}(i,2) = packets{j}(i,4);
+                %Dropped_Queue{j}(i,2) = packets{j}(i,4);
+                %Dropped_Queue{j}(i,3) = k;
+            %end    
         end    
     end
-    [scheduled_order] = FCFS(Virtual_Queue, num_users);
+    %Virtual_Queue{j} = Virtual_Queue{j}(:);
+    %[scheduled_order] = FCFS(Virtual_Queue, num_users);
     %[scheduled_order] = Round_Robin(Virtual_Queue, num_users, time_slots);
 end    
 %system_time{2}(system_time{2}==0) = NaN;
@@ -50,7 +52,7 @@ end
 %average_system_time = mean((system_time{2}(nonZeroIndexes))');
 %average_system_time = sum(system_time{2},2)./ sum(system_time{2}~=0,2);
 %average_waiting_time = sum(waiting_time{2},2)./ sum(waiting_time{2}~=0,2);
-Plotting(Virtual_Queue, Dropped_Queue, system_time, waiting_time);
+%Plotting(Virtual_Queue, Dropped_Queue, system_time, waiting_time);
 %Initial_Queue = containers.Map(s_no_frames, t_deadline_packets);
 % While new arrival event happens:
 %Initial_Queue(length(s_no_frames) +1) = 5;

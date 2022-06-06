@@ -37,9 +37,10 @@ for i = 1:num_frame
             packet{j,i}(k,3) = packets{j}(i,4);
         end
     end   
+    Virtual_Queue{1} = (cat(1, packet{1,:}));
+    Virtual_Queue{2} = (cat(1, packet{2,:}));
 end 
-Virtual_Queue{1} = (cat(1, packet{1,:}));
-Virtual_Queue{2} = (cat(1, packet{2,:}));
+
                 %Virtual_Queue{j}(i,2) = packets{j}(i,4);
                 %Virtual_Queue{j}(i,3) = k;
                 %Virtual_Queue{j,i}(k) = k;

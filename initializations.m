@@ -2,9 +2,15 @@
 clc;
 testFile = load('vr_Headset_View_1080p30_30_8000_out_bytes.mat');
 %%Reading the input files and initializing the starting vectors
-traceFile{1} = readmatrix('ge_cities_40mbps_60fps'); %Google VR trace file
-traceFile{2} = readmatrix('ge_cities_40mbps_30fps'); %Google VR trace file
-num_users = 2;
+traceFile{1} = readmatrix('ge_cities_40mbps_60fps'); %Google Earth VR - Cities trace file
+traceFile{2} = readmatrix('ge_cities_40mbps_30fps'); %Google Earth VR - Cities trace file
+traceFile{3} = readmatrix('ge_tour_40mbps_60fps'); %Google Earth VR - Tour trace file
+traceFile{4} = readmatrix('ge_tour_40mbps_30fps'); %Google Earth VR - Tour VR trace file
+traceFile{5} = readmatrix('mc_40mbps_60fps'); %Minecraft trace file
+traceFile{6} = readmatrix('mc_40mbps_30fps'); %Minecraft trace file
+traceFile{7} = readmatrix('vp_40mbps_60fps'); %Virus Popper trace file
+traceFile{8} = readmatrix('vp_40mbps_30fps'); %Virus Popper trace file
+num_users = 8;
 num_frame = 100;
 time_slots = 0.0000625*ones(num_frame,1);
 time_slots = 0.0000625;
@@ -30,6 +36,7 @@ initial_QoE = ones(100,98);
 for i = 1:length(t_arrival)
     for j = 1:num_users
         t_arrival(i+1,j) = t_nxt_frame(i,j) + t_arrival(i,j);
+        
     end
 end    
 
@@ -46,7 +53,7 @@ q = 0.016;            %quantum time- a round-robin scheduler generally employs t
 %fraction of the total number of packets encompassing a frame and taking
 %the time to next frame into account as well
 QoE = ones(length(t_arrival),num_users);
-QoE(:,2) = 2*QoE(:,2);
+
 
 %Sort the Scheduled frames according to the QoEs
 %[sorted_QoE, sortQoEIdx] = sort(Initial_QoE,'descend');
@@ -66,6 +73,7 @@ n_pack_burst = Burst_Size./1320;       %Number of packets per burst
 for i= 1:num_users
     s_no{i} = zeros(length(n_pack_burst),max(round(n_pack_burst(:,i)))); %Dimensions of
 % s_no are [total_num_frames,frame_with_max_packets]
+    QoE(:,i) = i*QoE(:,i);
 end
 
 for i = 1:length(n_pack_burst)

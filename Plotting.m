@@ -27,19 +27,19 @@ for j = 1:num_users
 end
 legend('User 1(60 FPS)', 'User 2(30 FPS)');
 figure;
-plot( 1:100, Burst_Size(:,1)./1000);
-hold on;
-plot( 1:100, Burst_Size(:,2)./1000);
+for j = 1:num_users
+    plot( 1:100, Burst_Size(:,j)./1000);
+    hold on;
+end    
 title('Frame Size variation across users');
 xlabel('Frame Number');
 ylabel('Frame Size in Kb');
-legend('User 1(60 FPS)', 'User 2(30 FPS)');
-figure;
+legend('User 1(60 FPS)', 'User 2(30 FPS)', 'User 3(60 FPS)', 'User 4(30 FPS)', 'User 5(60 FPS)', 'User 6(30 FPS)', 'User 7(60 FPS)', 'User 8(30 FPS)');figure;
 
-
-histogram( Burst_Size(:,1)./1000);
-hold on;
-histogram( Burst_Size(:,2)./1000);
+for i = 1:num_users
+    histogram( Burst_Size(:,i)./1000);
+    hold on;
+end    
 title('Histogram of frame distibution');
 xlabel('Frame Size in Kb');
-legend('User 1(60 FPS)', 'User 2(30 FPS)');
+legend('User 1(60 FPS)', 'User 2(30 FPS)', 'User 3(60 FPS)', 'User 4(30 FPS)', 'User 5(60 FPS)', 'User 6(30 FPS)', 'User 7(60 FPS)', 'User 8(30 FPS)');

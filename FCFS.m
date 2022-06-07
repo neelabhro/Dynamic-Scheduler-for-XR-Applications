@@ -28,6 +28,24 @@ for i = 1:length(scheduled_order)
     elseif scheduled_order(i,3) == 2
         scheduling_time{2}(i) = i*time_slots;
         system_time{2}(i) = scheduled_order(i,1) + i*time_slots;
+    elseif scheduled_order(i,3) == 3
+        scheduling_time{3}(i) = i*time_slots;
+        system_time{3}(i) = scheduled_order(i,1) + i*time_slots;
+    elseif scheduled_order(i,3) == 4
+        scheduling_time{4}(i) = i*time_slots;
+        system_time{4}(i) = scheduled_order(i,1) + i*time_slots;
+    elseif scheduled_order(i,3) == 5
+        scheduling_time{5}(i) = i*time_slots;
+        system_time{5}(i) = scheduled_order(i,1) + i*time_slots;
+    elseif scheduled_order(i,3) == 6
+        scheduling_time{6}(i) = i*time_slots;
+        system_time{6}(i) = scheduled_order(i,1) + i*time_slots;
+    elseif scheduled_order(i,3) == 7
+        scheduling_time{7}(i) = i*time_slots;
+        system_time{7}(i) = scheduled_order(i,1) + i*time_slots;        
+    elseif scheduled_order(i,3) == 8
+        scheduling_time{8}(i) = i*time_slots;
+        system_time{8}(i) = scheduled_order(i,1) + i*time_slots;
     end   
 end    
 

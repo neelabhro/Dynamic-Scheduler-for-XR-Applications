@@ -1,4 +1,4 @@
-function Plotting(Virtual_Queue, Dropped_Queue, system_time, waiting_time)
+function [average_system_time, average_waiting_time] = Plotting(Virtual_Queue, system_time, waiting_time)
 
 initializations;
 
@@ -8,7 +8,7 @@ for i = 1:num_users
 end    
 
 for j = 1:num_users
-    plot(average_waiting_time{j}.*1000);
+    plot(average_waiting_time{j});
     title('Average Waiting time per frame')
     xlabel('Frame number')
     ylabel('Time in ms')

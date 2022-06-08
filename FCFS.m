@@ -22,30 +22,38 @@ if size(scheduled_order,2) > 1
 end  
 
 for i = 1:length(scheduled_order)
+    scheduled_order(i,4) = i*time_slots;
+end    
+%Scheduled Order Column Representations:
+%Col 1: t_arrival
+%Col 2: Frame number
+%Col 3: User Number
+%Col 4: Elapsed time
+for i = 1:length(scheduled_order)
     if scheduled_order(i,3) == 1
         scheduling_time{1}(i) = i*time_slots;
-        system_time{1}(i) = scheduled_order(i,1) + i*time_slots;
+        system_time{1}(i) = scheduled_order(i,4) - scheduled_order(i,1);
     elseif scheduled_order(i,3) == 2
         scheduling_time{2}(i) = i*time_slots;
-        system_time{2}(i) = scheduled_order(i,1) + i*time_slots;
+        system_time{2}(i) = scheduled_order(i,4) - scheduled_order(i,1);
     elseif scheduled_order(i,3) == 3
         scheduling_time{3}(i) = i*time_slots;
-        system_time{3}(i) = scheduled_order(i,1) + i*time_slots;
+        system_time{3}(i) = scheduled_order(i,4) - scheduled_order(i,1);
     elseif scheduled_order(i,3) == 4
         scheduling_time{4}(i) = i*time_slots;
-        system_time{4}(i) = scheduled_order(i,1) + i*time_slots;
+        system_time{4}(i) = scheduled_order(i,4) - scheduled_order(i,1);
     elseif scheduled_order(i,3) == 5
         scheduling_time{5}(i) = i*time_slots;
-        system_time{5}(i) = scheduled_order(i,1) + i*time_slots;
+        system_time{5}(i) = scheduled_order(i,4) - scheduled_order(i,1);
     elseif scheduled_order(i,3) == 6
         scheduling_time{6}(i) = i*time_slots;
-        system_time{6}(i) = scheduled_order(i,1) + i*time_slots;
+        system_time{6}(i) = scheduled_order(i,4) - scheduled_order(i,1);
     elseif scheduled_order(i,3) == 7
         scheduling_time{7}(i) = i*time_slots;
-        system_time{7}(i) = scheduled_order(i,1) + i*time_slots;        
+        system_time{7}(i) = scheduled_order(i,4) - scheduled_order(i,1);        
     elseif scheduled_order(i,3) == 8
         scheduling_time{8}(i) = i*time_slots;
-        system_time{8}(i) = scheduled_order(i,1) + i*time_slots;
+        system_time{8}(i) = scheduled_order(i,4) - scheduled_order(i,1);
     end   
 end    
 

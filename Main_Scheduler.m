@@ -29,7 +29,9 @@ end
                 %fprintf('Hello')
                 %Virtual_Queue{j}(i,k) = packets{j}(i,2); %Virtual_Queue{j}(i,2) = packets{j}(i,4);
 %num_frame for equals half the number of time slots, represents arrival frames               
+time_slot = 0.0000625*ones(num_frame*10000,1);
 for i = 1:num_frame
+%for i = 1:length(time_slot)    
     for j = 1:num_users
         for k = 1:packets{j}(i,3)
             packet{j,i}(k,1) = packets{j}(i,2);
@@ -43,11 +45,24 @@ for i = 1:num_frame
     Virtual_Queue{4} = (cat(1, packet{4,:}));
     %Virtual_Queue{5} = (cat(1, packet{5,:}));
     %Virtual_Queue{6} = (cat(1, packet{6,:}));
-    %Virtual_Queue{7} = (cat(1, packet{7,:}));
-    %Virtual_Queue{8} = (cat(1, packet{8,:}));
+%     Virtual_Queue{7} = (cat(1, packet{7,:}));
+%     Virtual_Queue{8} = (cat(1, packet{8,:}));
     %Virtual_Queue{j} = (cat(1, packet{j,:}));
-    [scheduled_order, scheduling_time, system_time] = FCFS(Virtual_Queue, num_users, time_slots);
+    [scheduled_order, scheduling_time, system_time, time_slots_col] = FCFS(Virtual_Queue, num_users, time_slots);
 end 
+
+
+%for i = 1:length(time_slot)
+%    V_Queue{1} = (cat(1, packet{1,:}));
+%end    
+
+
+
+
+
+
+
+
 
 %mean_sys_time = mean(system_time);
                 %Virtual_Queue{j}(i,2) = packets{j}(i,4);

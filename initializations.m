@@ -78,7 +78,7 @@ for i= 1:num_users
 % s_no are [total_num_frames,frame_with_max_packets]
     QoE(:,i) = i*QoE(:,i);
 end
-QoE = QoE(:,QoE_order_indices);
+%QoE = QoE(:,QoE_order_indices);
 
 for i = 1:length(n_pack_burst)
     for j = 1:num_users

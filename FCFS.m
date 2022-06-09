@@ -1,4 +1,4 @@
-function [scheduled_order, scheduling_time, system_time] = FCFS(Virtual_Queue, num_users, time_slots)
+function [scheduled_order, scheduling_time, system_time,time_slots_col] = FCFS(Virtual_Queue, num_users, time_slots)
 %t1 = 0;
 %t2 = 0;
 %wtime = zeros(1,num_users);       %waiting time
@@ -10,7 +10,7 @@ function [scheduled_order, scheduling_time, system_time] = FCFS(Virtual_Queue, n
 
 scheduled_order = [];
 for i = 1:num_users
-    scheduled_order = [scheduled_order; Virtual_Queue{i} ];
+    scheduled_order = [scheduled_order; Virtual_Queue{i}];
 end    
 %scheduled_order = [btime(:,1); btime(:,2)];
 [temp_order, temp_order_indices] = sort(scheduled_order(:,1));
@@ -23,15 +23,25 @@ end
 
 for i = 1:length(scheduled_order)
     scheduled_order(i,4) = i*time_slots;
+end  
+
+for i = 1:2*length(scheduled_order)
+    time_slots_col(i) = (i*time_slots)';
 end    
 
 for i = 1:length(scheduled_order)
     if scheduled_order(i,4) < scheduled_order(i,1)
         b = [0, 0, 0, i*time_slots];
-        scheduled_order = [scheduled_order(1:i-1,:) ; b ; scheduled_order(i:end,:)];
+        c = [scheduled_order(i,1), scheduled_order(i,2), scheduled_order(i,3), (i+1)*time_slots];
+        %d = [scheduled_order(i+1:end,1), scheduled_order(i+1:end,2), scheduled_order(i+1:end,3), scheduled_order(i+1:end,4)];
+        %d = [scheduled_order(i+1:end,1), scheduled_order(i+1:end,2), scheduled_order(i+1:end,3), time_slots_col( i+2 :(length(scheduled_order) - (i+1)))];
+        %d = [scheduled_order(i+1:end,1), scheduled_order(i+1:end,2), scheduled_order(i+1:end,3), scheduled_order(i+2:end,4)];
+        d = [scheduled_order(i+1:end,1), scheduled_order(i+1:end,2), scheduled_order(i+1:end,3), (i+2:length(scheduled_order) - (i-1))*time_slots];
+
+        scheduled_order = [scheduled_order(1:i-1,:) ; b ; c; d];
     end
 end 
-
+% time_slots_col(i+2:(length(scheduled_order) - (i-1))) 
 %Scheduled Order Column Representations:
 %Col 1: t_arrival
 %Col 2: Frame number

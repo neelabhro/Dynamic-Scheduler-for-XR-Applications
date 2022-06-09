@@ -13,7 +13,7 @@ initializations
 %https://www.sharetechnote.com/html/5G/5G_FrameStructure.html
 %time_slots = time_slots(5001:5100);
 for i = 1:num_users
-    %Virtual_Queue{i} = zeros(length(time_slots),2);
+    Virtual_Queue{i} = zeros(length(time_slots),2);
     %Dropped_Queue{i} = zeros(length(time_slots),2);
 end    
 %Virtual_Queue{1} = zeros(length(time_slots),1); %Defining virtual queues for all the users
@@ -41,14 +41,15 @@ for i = 1:num_frame
     Virtual_Queue{2} = (cat(1, packet{2,:}));
     Virtual_Queue{3} = (cat(1, packet{3,:}));
     Virtual_Queue{4} = (cat(1, packet{4,:}));
-    Virtual_Queue{5} = (cat(1, packet{5,:}));
-    Virtual_Queue{6} = (cat(1, packet{6,:}));
-    Virtual_Queue{7} = (cat(1, packet{7,:}));
-    Virtual_Queue{8} = (cat(1, packet{8,:}));
-    
+    %Virtual_Queue{5} = (cat(1, packet{5,:}));
+    %Virtual_Queue{6} = (cat(1, packet{6,:}));
+    %Virtual_Queue{7} = (cat(1, packet{7,:}));
+    %Virtual_Queue{8} = (cat(1, packet{8,:}));
+    %Virtual_Queue{j} = (cat(1, packet{j,:}));
     [scheduled_order, scheduling_time, system_time] = FCFS(Virtual_Queue, num_users, time_slots);
 end 
 
+%mean_sys_time = mean(system_time);
                 %Virtual_Queue{j}(i,2) = packets{j}(i,4);
                 %Virtual_Queue{j}(i,3) = k;
                 %Virtual_Queue{j,i}(k) = k;
@@ -78,6 +79,7 @@ end
 %average_system_time = sum(system_time{2},2)./ sum(system_time{2}~=0,2);
 %average_waiting_time = sum(waiting_time{2},2)./ sum(waiting_time{2}~=0,2);
 [average_system_time, average_waiting_time] = Plotting(Virtual_Queue, system_time, scheduling_time);
+mean_sys_time = mean(average_system_time);
 %Initial_Queue = containers.Map(s_no_frames, t_deadline_packets);
 % While new arrival event happens:
 %Initial_Queue(length(s_no_frames) +1) = 5;

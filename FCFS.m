@@ -24,6 +24,14 @@ end
 for i = 1:length(scheduled_order)
     scheduled_order(i,4) = i*time_slots;
 end    
+
+for i = 1:length(scheduled_order)
+    if scheduled_order(i,4) < scheduled_order(i,1)
+        b = [0, 0, 0, i*time_slots];
+        scheduled_order = [scheduled_order(1:i-1,:) ; b ; scheduled_order(i:end,:)];
+    end
+end 
+
 %Scheduled Order Column Representations:
 %Col 1: t_arrival
 %Col 2: Frame number

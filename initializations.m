@@ -10,7 +10,7 @@ traceFile{5} = readmatrix('mc_40mbps_60fps'); %Minecraft trace file
 traceFile{6} = readmatrix('mc_40mbps_30fps'); %Minecraft trace file
 traceFile{7} = readmatrix('vp_40mbps_60fps'); %Virus Popper trace file
 traceFile{8} = readmatrix('vp_40mbps_30fps'); %Virus Popper trace file
-num_users = 8;
+num_users = 4;
 num_frame = 100;
 time_slots = 0.0000625*ones(num_frame,1);
 time_slots = 0.0000625;
@@ -52,6 +52,9 @@ q = 0.016;            %quantum time- a round-robin scheduler generally employs t
 %Initial_QoE = floor(n_pack_burst./(1000.*t_nxt_frame)); %Preliminarily defining this to be a
 %fraction of the total number of packets encompassing a frame and taking
 %the time to next frame into account as well
+n_pack_burst = Burst_Size./1320;       %Number of packets per burst 
+av_frame_size = mean(n_pack_burst);
+[QoE_order, QoE_order_indices] = sort(round(av_frame_size));
 QoE = ones(length(t_arrival),num_users);
 
 
@@ -69,12 +72,13 @@ QoE = ones(length(t_arrival),num_users);
 
 
 %% Finding the number of packets per burst and populating the cells accordingly
-n_pack_burst = Burst_Size./1320;       %Number of packets per burst 
+
 for i= 1:num_users
     s_no{i} = zeros(length(n_pack_burst),max(round(n_pack_burst(:,i)))); %Dimensions of
 % s_no are [total_num_frames,frame_with_max_packets]
     QoE(:,i) = i*QoE(:,i);
 end
+QoE = QoE(:,QoE_order_indices);
 
 for i = 1:length(n_pack_burst)
     for j = 1:num_users

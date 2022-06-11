@@ -10,7 +10,7 @@ traceFile{5} = readmatrix('mc_40mbps_60fps'); %Minecraft trace file
 traceFile{6} = readmatrix('mc_40mbps_30fps'); %Minecraft trace file
 traceFile{7} = readmatrix('vp_40mbps_60fps'); %Virus Popper trace file
 traceFile{8} = readmatrix('vp_40mbps_30fps'); %Virus Popper trace file
-num_users = 4;
+num_users = 8;
 num_frame = 100;
 time_slots = 0.0000625*ones(num_frame,1);
 time_slots = 0.0000625;
@@ -151,3 +151,5 @@ end
 %packet{2} = (cat(1, frame{2,:}));
 %end
     %users.delivered_frames = cell(1,num_users);
+
+%mean = cell2mat(struct2cell(File1))

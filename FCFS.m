@@ -29,8 +29,12 @@ for i = 1:2*length(scheduled_order)
     time_slots_col(i) = (i*time_slots)';
 end    
 
+scheduled_order  = [scheduled_order; zeros(size(scheduled_order))];
+scheduled_order  = [scheduled_order; zeros(size(scheduled_order))];
 
 for i = 1:length(scheduled_order)
+%i = 1;
+%while (i <= 60000) 
    if scheduled_order(i,4) < scheduled_order(i,1)
        b = [0, 0, 0, i*time_slots];
        c = [scheduled_order(i,1), scheduled_order(i,2), scheduled_order(i,3), (i+1)*time_slots];
@@ -39,8 +43,9 @@ for i = 1:length(scheduled_order)
        %d = [scheduled_order(i+1:end,1), scheduled_order(i+1:end,2), scheduled_order(i+1:end,3), scheduled_order(i+2:end,4)];
        d = [scheduled_order(i+1:end,1), scheduled_order(i+1:end,2), scheduled_order(i+1:end,3), (((i+2:length(scheduled_order(i+1:end,1)) + (i+1)))*time_slots)'];
 
-       scheduled_order = [scheduled_order(1:i-1,:) ; b; c; d];
-    end
+       scheduled_order = [scheduled_order(1:i-1,:) ;b; c; d];
+   end
+   %i = i+1;
 end 
 % time_slots_col(i+2:(length(scheduled_order) - (i-1))) 
 %Scheduled Order Column Representations:

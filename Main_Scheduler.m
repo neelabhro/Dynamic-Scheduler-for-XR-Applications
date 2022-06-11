@@ -43,10 +43,10 @@ for i = 1:num_frame
     Virtual_Queue{2} = (cat(1, packet{2,:}));
     Virtual_Queue{3} = (cat(1, packet{3,:}));
     Virtual_Queue{4} = (cat(1, packet{4,:}));
-    %Virtual_Queue{5} = (cat(1, packet{5,:}));
-    %Virtual_Queue{6} = (cat(1, packet{6,:}));
-%     Virtual_Queue{7} = (cat(1, packet{7,:}));
-%     Virtual_Queue{8} = (cat(1, packet{8,:}));
+    Virtual_Queue{5} = (cat(1, packet{5,:}));
+    Virtual_Queue{6} = (cat(1, packet{6,:}));
+    Virtual_Queue{7} = (cat(1, packet{7,:}));
+    Virtual_Queue{8} = (cat(1, packet{8,:}));
     %Virtual_Queue{j} = (cat(1, packet{j,:}));
     [scheduled_order, scheduling_time, system_time, time_slots_col] = FCFS(Virtual_Queue, num_users, time_slots);
 end 

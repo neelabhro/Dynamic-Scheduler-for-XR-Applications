@@ -29,6 +29,7 @@ for i = 1:2*length(scheduled_order)
     time_slots_col(i) = (i*time_slots)';
 end    
 
+
 for i = 1:length(scheduled_order)
    if scheduled_order(i,4) < scheduled_order(i,1)
        b = [0, 0, 0, i*time_slots];

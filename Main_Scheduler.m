@@ -57,7 +57,7 @@ end
 %end    
 
 
-
+%[scheduled_order, scheduling_time, system_time, time_slots_col] = FCFS(Virtual_Queue, num_users, time_slots);
 
 
 

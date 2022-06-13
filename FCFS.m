@@ -53,28 +53,28 @@ end
 for i = 1:length(scheduled_order)
     if scheduled_order(i,3) == 1
         waiting_time{1}(i) = scheduled_order(i,4) - scheduled_order(i,1);
-        system_time{1}(i) = scheduled_order(i,4) - scheduled_order(i,1) + time_slots;
+        system_time{1}(i) = waiting_time{1}(i) + time_slots;
     elseif scheduled_order(i,3) == 2
         waiting_time{2}(i) = scheduled_order(i,4) - scheduled_order(i,1);
-        system_time{2}(i) = scheduled_order(i,4) - scheduled_order(i,1) + time_slots;
+        system_time{2}(i) = waiting_time{2}(i) + time_slots;
     elseif scheduled_order(i,3) == 3
         waiting_time{3}(i) = scheduled_order(i,4) - scheduled_order(i,1);
-        system_time{3}(i) = scheduled_order(i,4) - scheduled_order(i,1) + time_slots;
+        system_time{3}(i) = waiting_time{3}(i) + time_slots;
     elseif scheduled_order(i,3) == 4
         waiting_time{4}(i) = scheduled_order(i,4) - scheduled_order(i,1);
-        system_time{4}(i) = scheduled_order(i,4) - scheduled_order(i,1) + time_slots;
+        system_time{4}(i) = waiting_time{4}(i) + time_slots;
     elseif scheduled_order(i,3) == 5
         waiting_time{5}(i) = scheduled_order(i,4) - scheduled_order(i,1) ;
-        system_time{5}(i) = scheduled_order(i,4) - scheduled_order(i,1) + time_slots;
+        system_time{5}(i) = waiting_time{5}(i) + time_slots;
     elseif scheduled_order(i,3) == 6
         waiting_time{6}(i) = scheduled_order(i,4) - scheduled_order(i,1);
-        system_time{6}(i) = scheduled_order(i,4) - scheduled_order(i,1) + time_slots;
+        system_time{6}(i) = waiting_time{6}(i) + time_slots;
     elseif scheduled_order(i,3) == 7
         waiting_time{7}(i) = scheduled_order(i,4) - scheduled_order(i,1);
-        system_time{7}(i) = scheduled_order(i,4) - scheduled_order(i,1) + time_slots;        
+        system_time{7}(i) = waiting_time{7}(i) + time_slots;        
     elseif scheduled_order(i,3) == 8
         waiting_time{8}(i) = scheduled_order(i,4) - scheduled_order(i,1);
-        system_time{8}(i) = scheduled_order(i,4) - scheduled_order(i,1) + time_slots;
+        system_time{8}(i) = waiting_time{8}(i) + time_slots;
     end   
 end    
 

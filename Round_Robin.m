@@ -1,9 +1,11 @@
-function [scheduled_order] = Round_Robin(Virtual_Queue, num_users, time_slots)
+function [scheduled_order] = Round_Robin(Virtual_Queue, num_users, time_slots, num_frame)
 
 
 scheduled_order = [];
 user_index = [];
-for i = 1:length(time_slots)
+
+%for i = 1:length(time_slots)
+for i = 1:174
     for j = 1:num_users
         scheduled_order = [scheduled_order; Virtual_Queue{j}(i)];
         user_index = [user_index; j];

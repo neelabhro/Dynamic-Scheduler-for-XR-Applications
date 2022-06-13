@@ -25,9 +25,6 @@ for i = 1:length(scheduled_order)
     scheduled_order(i,4) = i*time_slots;
 end  
 
-for i = 1:2*length(scheduled_order)
-    time_slots_col(i) = (i*time_slots)';
-end    
 
 scheduled_order  = [scheduled_order; zeros(size(scheduled_order))];
 scheduled_order  = [scheduled_order; zeros(size(scheduled_order))];

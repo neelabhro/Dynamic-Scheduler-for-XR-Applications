@@ -1,4 +1,4 @@
-function [scheduled_order, waiting_time, system_time,time_slots_col] = FCFS(Virtual_Queue, num_users, time_slots)
+function [scheduled_order, waiting_time, system_time] = FCFS(Virtual_Queue, num_users, time_slots)
 %t1 = 0;
 %t2 = 0;
 %wtime = zeros(1,num_users);       %waiting time

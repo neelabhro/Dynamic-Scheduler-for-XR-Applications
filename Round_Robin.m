@@ -4,14 +4,16 @@ function [scheduled_order, user_index, system_time, waiting_time ] = Round_Robin
 scheduled_order = [];
 user_index = [];
 
-
-for k = 1:length(Virtual_Queue{3})
+for i = 1:max(length(Virtual_Queue{2}))
     for j = 1:num_users
-        scheduled_order = [scheduled_order; Virtual_Queue{j}(k)];
-        user_index = [user_index; j];
-    end
-end  
-%end    
+    %for k = 1:length(Virtual_Queue{j})
+        if i < length(Virtual_Queue{j})
+            scheduled_order = [scheduled_order; Virtual_Queue{j}(i)];
+            user_index = [user_index; j];
+        end    
+    end  
+end    
+
 scheduled_order = [scheduled_order, user_index];
 for i = 1:length(scheduled_order)
     scheduled_order(i,3) = i*time_slots;

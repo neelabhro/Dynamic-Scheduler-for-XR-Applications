@@ -56,10 +56,26 @@ File6 = load('mean_sys_time6.mat');
 File7 = load('mean_sys_time7.mat');
 File8 = load('mean_sys_time8.mat');
 
+File1RR = load('mean_sys_time1_RR.mat');
+File2RR = load('mean_sys_time2_RR.mat');
+File3RR = load('mean_sys_time3_RR.mat');
+File4RR = load('mean_sys_time4_RR.mat');
+File5RR = load('mean_sys_time5_RR.mat');
+File6RR = load('mean_sys_time6_RR.mat');
+File7RR = load('mean_sys_time7_RR.mat');
+File8RR = load('mean_sys_time8_RR.mat');
+
+
+
 %figure;
 Mean_sys_time = [cell2mat(struct2cell(File1)), cell2mat(struct2cell(File2)), cell2mat(struct2cell(File3)), cell2mat(struct2cell(File4)), cell2mat(struct2cell(File5)), cell2mat(struct2cell(File6)), cell2mat(struct2cell(File7)), cell2mat(struct2cell(File8))];
 %Mean_sys_time = struct2cell(Mean_sys_time);
-plot(1:8,Mean_sys_time);
+Mean_sys_time_RR = [cell2mat(struct2cell(File1RR)), cell2mat(struct2cell(File2RR)), cell2mat(struct2cell(File3RR)), cell2mat(struct2cell(File4RR)), cell2mat(struct2cell(File5RR)), cell2mat(struct2cell(File6RR)), cell2mat(struct2cell(File7RR)), cell2mat(struct2cell(File8RR))];
+
+plot(1:8,(Mean_sys_time), 'LineWidth', 4);
+hold on;
+plot(1:8,(Mean_sys_time_RR),'LineWidth', 4);
 title('Average System time for different #user scenarios');
+legend('FCFS', 'Round Robin')
 xlabel('#Users');
 ylabel('Time(s)');

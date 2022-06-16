@@ -47,10 +47,10 @@ for i = 1:num_frame
     Virtual_Queue{6} = (cat(1, packet{6,:}));
     Virtual_Queue{7} = (cat(1, packet{7,:}));
     Virtual_Queue{8} = (cat(1, packet{8,:}));
-    %Virtual_Queue{j} = (cat(1, packet{j,:}));
+%     Virtual_Queue{j} = (cat(1, packet{j,:}));
     %[scheduled_order, waiting_time, system_time] = FCFS(Virtual_Queue, num_users, time_slots);
-    %time_slots = 10000*length(Virtual_Queue);
-    [scheduled_order, user_index, system_time, waiting_time ] = Round_Robin(Virtual_Queue, num_users, time_slots, num_frame);
+    [scheduled_order, waiting_time, system_time] = EDF(Virtual_Queue, num_users, time_slots,deadline);
+    %[scheduled_order, user_index, system_time, waiting_time ] = Round_Robin(Virtual_Queue, num_users, time_slots, num_frame);
 end 
 
 
@@ -96,7 +96,7 @@ end
 %average_system_time = sum(system_time{2},2)./ sum(system_time{2}~=0,2);
 %average_waiting_time = sum(waiting_time{2},2)./ sum(waiting_time{2}~=0,2);
 [average_system_time, average_waiting_time] = Plotting(Virtual_Queue, system_time, waiting_time);
-%mean_sys_time = mean(average_system_time);
+mean_sys_time = mean(average_system_time);
 %Initial_Queue = containers.Map(s_no_frames, t_deadline_packets);
 % While new arrival event happens:
 %Initial_Queue(length(s_no_frames) +1) = 5;

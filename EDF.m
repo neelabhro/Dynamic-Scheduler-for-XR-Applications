@@ -1,4 +1,4 @@
-function [scheduled_order, waiting_time, system_time] = EDF(Virtual_Queue, num_users, time_slots, deadline)
+function [scheduled_order, waiting_time, system_time, delayed_order] = EDF(Virtual_Queue, num_users, time_slots, deadline)
 %t1 = 0;
 %t2 = 0;
 %wtime = zeros(1,num_users);       %waiting time
@@ -7,15 +7,15 @@ function [scheduled_order, waiting_time, system_time] = EDF(Virtual_Queue, num_u
 %btime = t_arrival_packet;
 %scheduled_order = zeros(num_users*length(btime));
 %scheduled_order = zeros(length(time_slots)*2,2);
-
+delayed_order = [];
 scheduled_order = [];
 for i = 1:num_users
-    scheduled_order = [Virtual_Queue{i};scheduled_order];
-end    
+    scheduled_order = [Virtual_Queue{i}; scheduled_order];
+end
 %scheduled_order = [btime(:,1); btime(:,2)];
 for i = 1:length(scheduled_order)
     scheduled_order(i,4) = scheduled_order(i,1) + deadline;
-end  
+end
 
 [temp_order, temp_order_indices] = sort(scheduled_order(:,4));
 
@@ -24,11 +24,11 @@ if size(scheduled_order,2) > 1
     user_order = scheduled_order(:,3);
     deadline_order = scheduled_order(:,4);
     scheduled_order = [scheduled_order(temp_order_indices), frame_order(temp_order_indices), user_order(temp_order_indices), deadline_order(temp_order_indices)];
-end  
+end
 
 for i = 1:length(scheduled_order)
     scheduled_order(i,5) = i*time_slots;
-end  
+end
 
 scheduled_order  = [scheduled_order; zeros(size(scheduled_order))];
 scheduled_order  = [scheduled_order; zeros(size(scheduled_order))];
@@ -40,7 +40,6 @@ for i = 1:length(scheduled_order)
        b = [0, 0, 0, 0, i*time_slots];
        c = [scheduled_order(i,1), scheduled_order(i,2), scheduled_order(i,3),scheduled_order(i,4), (i+1)*time_slots];
        d = [scheduled_order(i+1:end,1), scheduled_order(i+1:end,2), scheduled_order(i+1:end,3), scheduled_order(i+1:end,4), (((i+2:length(scheduled_order(i+1:end,1)) + (i+1)))*time_slots)'];
-
        scheduled_order = [scheduled_order(1:i-1,:) ;b; c; d];
    end
    %i = i+1;
@@ -82,6 +81,11 @@ for i = 1:length(scheduled_order)
     end   
 end    
 
+for i = 1:length(scheduled_order)
+    if scheduled_order(i,5) < scheduled_order(i,4)
+        delayed_order(i) = scheduled_order(i); %Informs which packets were delayed
+    end
+end    
 
 
 %    for j=1:num_users -1

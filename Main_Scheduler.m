@@ -52,7 +52,7 @@ for i = 1:num_frame
     %[scheduled_order, waiting_time, system_time] = FCFS(Virtual_Queue, num_users, time_slots);
     %[scheduled_order, waiting_time, system_time, delayed_order] = EDF(Virtual_Queue, num_users, time_slots,deadline);
     %[scheduled_order, user_index, system_time, waiting_time ] = Round_Robin(Virtual_Queue, num_users, time_slots, num_frame);
-    [scheduled_order, waiting_time, system_time, delayed_order] = Wt_Thpt(Virtual_Queue, num_users, time_slots,deadline);
+    [scheduled_order, waiting_time, system_time, delayed_order] = Wt_Thpt(Virtual_Queue, num_users, time_slots,deadline, alpha);
 end 
 
 

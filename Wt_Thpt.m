@@ -1,4 +1,4 @@
-function [scheduled_order, waiting_time, system_time, delayed_order] = Wt_Thpt(Virtual_Queue, num_users, time_slots, deadline)
+function [scheduled_order, waiting_time, system_time, delayed_order] = Wt_Thpt(Virtual_Queue, num_users, time_slots, deadline, alpha)
 %t1 = 0;
 %t2 = 0;
 %wtime = zeros(1,num_users);       %waiting time
@@ -16,7 +16,6 @@ end
 for i = 1:length(scheduled_order)
     scheduled_order(i,5) = scheduled_order(i,1) + deadline;
 end
-
 [temp_order, temp_order_indices] = sort(scheduled_order(:,5));
 
 if size(scheduled_order,2) > 1
@@ -28,7 +27,11 @@ if size(scheduled_order,2) > 1
 end
 
 for i = 1:length(scheduled_order)
-    scheduled_order(i,6) = i*time_slots;
+    if scheduled_order(i,4) >= (1/alpha)*max(scheduled_order(:,4))
+        scheduled_order(i,6) = i*time_slots;
+    else
+        scheduled_order(i,6) = 0;
+    end    
 end
 
 scheduled_order  = [scheduled_order; zeros(size(scheduled_order))];
@@ -84,7 +87,7 @@ for i = 1:length(scheduled_order)
 end    
 
 for i = 1:length(scheduled_order)
-    if scheduled_order(i,6) < scheduled_order(i,6)
+    if scheduled_order(i,5) < scheduled_order(i,6)
         delayed_order(i) = scheduled_order(i); %Informs which packets were delayed
     end
 end    

@@ -84,7 +84,7 @@ for i = 1:length(scheduled_order)
 end    
 
 for i = 1:length(scheduled_order)
-    if scheduled_order(i,6) < scheduled_order(i,6)
+    if scheduled_order(i,5) < scheduled_order(i,6)
         delayed_order(i) = scheduled_order(i); %Informs which packets were delayed
     end
 end    

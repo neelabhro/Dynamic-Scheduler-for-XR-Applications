@@ -55,9 +55,9 @@ q = 0.016;            %quantum time- a round-robin scheduler generally employs t
 %the time to next frame into account as well
 n_pack_burst = Burst_Size./1320;       %Number of packets per burst 
 av_frame_size = mean(n_pack_burst);
-[QoE_order, QoE_order_indices] = sort(round(av_frame_size));
-QoE = ones(length(t_arrival),num_users);
-
+%[QoE_order, QoE_order_indices] = sort(round(av_frame_size));
+%QoE = ones(length(t_arrival),num_users);
+QoE = repmat(round((av_frame_size)./10),length(t_arrival),1);
 
 %Sort the Scheduled frames according to the QoEs
 %[sorted_QoE, sortQoEIdx] = sort(Initial_QoE,'descend');
@@ -77,10 +77,10 @@ QoE = ones(length(t_arrival),num_users);
 for i= 1:num_users
     s_no{i} = zeros(length(n_pack_burst),max(round(n_pack_burst(:,i)))); %Dimensions of
 % s_no are [total_num_frames,frame_with_max_packets]
-    QoE(:,i) = i*QoE(:,i);
+    %QoE(:,i) = i*QoE(:,i);
 end
 %QoE = QoE(:,QoE_order_indices);
-
+%QoE_arr = 1:num_users;
 for i = 1:length(n_pack_burst)
     for j = 1:num_users
         s_no{j}(i, 1:(round(n_pack_burst(i,j)))) = linspace(1, round(n_pack_burst(i,j)), round(n_pack_burst(i,j))); 

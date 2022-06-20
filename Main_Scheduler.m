@@ -36,7 +36,8 @@ for i = 1:num_frame
         for k = 1:packets{j}(i,3)
             packet{j,i}(k,1) = packets{j}(i,2);
             packet{j,i}(k,2) = i;
-            packet{j,i}(k,3) = packets{j}(i,4);
+            packet{j,i}(k,3) = j;
+            packet{j,i}(k,4) = packets{j}(i,4);
         end
     end   
     Virtual_Queue{1} = (cat(1, packet{1,:}));
@@ -49,8 +50,9 @@ for i = 1:num_frame
     Virtual_Queue{8} = (cat(1, packet{8,:}));
 %     Virtual_Queue{j} = (cat(1, packet{j,:}));
     %[scheduled_order, waiting_time, system_time] = FCFS(Virtual_Queue, num_users, time_slots);
-    [scheduled_order, waiting_time, system_time] = EDF(Virtual_Queue, num_users, time_slots,deadline);
+    %[scheduled_order, waiting_time, system_time, delayed_order] = EDF(Virtual_Queue, num_users, time_slots,deadline);
     %[scheduled_order, user_index, system_time, waiting_time ] = Round_Robin(Virtual_Queue, num_users, time_slots, num_frame);
+    [scheduled_order, waiting_time, system_time, delayed_order] = Wt_Thpt(Virtual_Queue, num_users, time_slots,deadline);
 end 
 
 

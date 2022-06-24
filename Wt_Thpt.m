@@ -27,10 +27,11 @@ if size(scheduled_order,2) > 1
 end
 
 for i = 1:length(scheduled_order)
-    if scheduled_order(i,4) >= (1/alpha)*max(scheduled_order(:,4))
+    [Max,Max_index] = max(scheduled_order(:,4));
+    if scheduled_order(i,4) >= (1/alpha)*Max
         scheduled_order(i,6) = i*time_slots;
     else
-        scheduled_order(i,6) = 0;
+        scheduled_order(i,6) = Max_index*time_slots;
     end    
 end
 

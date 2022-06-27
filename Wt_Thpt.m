@@ -1,4 +1,4 @@
-function [scheduled_order, waiting_time, system_time, delayed_order] = Wt_Thpt(Virtual_Queue, num_users, time_slots, deadline, alpha)
+function [scheduled_order, waiting_time, system_time, delayed_order, weighted_throughput] = Wt_Thpt(Virtual_Queue, num_users, time_slots, deadline, alpha)
 %t1 = 0;
 %t2 = 0;
 %wtime = zeros(1,num_users);       %waiting time
@@ -27,13 +27,16 @@ if size(scheduled_order,2) > 1
 end
 
 for i = 1:length(scheduled_order)
-    [Max,Max_index] = max(scheduled_order(:,4));
-    if scheduled_order(i,4) >= (1/alpha)*Max
+    [Max_QoE, Max_QoE_index] = max(scheduled_order(:,4));
+    if scheduled_order(i,4) >= (1/alpha)*Max_QoE
         scheduled_order(i,6) = i*time_slots;
     else
-        scheduled_order(i,6) = Max_index*time_slots;
-    end    
+        scheduled_order(i,6) = Max_QoE_index*time_slots;
+    end
+    weighted_throughput = sum(scheduled_order(:,4));
 end
+
+
 
 scheduled_order  = [scheduled_order; zeros(size(scheduled_order))];
 scheduled_order  = [scheduled_order; zeros(size(scheduled_order))];

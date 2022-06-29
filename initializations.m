@@ -1,15 +1,32 @@
 %clear;
 clc;
-testFile = load('vr_Headset_View_1080p30_30_8000_out_bytes.mat');
+%testFile = load('vr_Headset_View_1080p30_30_8000_out_bytes.mat');
 %%Reading the input files and initializing the starting vectors
-traceFile{1} = readmatrix('ge_cities_40mbps_60fps'); %Google Earth VR - Cities trace file
-traceFile{2} = readmatrix('ge_cities_40mbps_30fps'); %Google Earth VR - Cities trace file
-traceFile{3} = readmatrix('ge_tour_40mbps_60fps'); %Google Earth VR - Tour trace file
-traceFile{4} = readmatrix('ge_tour_40mbps_30fps'); %Google Earth VR - Tour VR trace file
-traceFile{5} = readmatrix('mc_40mbps_60fps'); %Minecraft trace file
-traceFile{6} = readmatrix('mc_40mbps_30fps'); %Minecraft trace file
-traceFile{7} = readmatrix('vp_40mbps_60fps'); %Virus Popper trace file
-traceFile{8} = readmatrix('vp_40mbps_30fps'); %Virus Popper trace file
+% traceFile{1} = readmatrix('ge_cities_40mbps_60fps'); %Google Earth VR - Cities trace file
+% traceFile{2} = readmatrix('ge_cities_40mbps_30fps'); %Google Earth VR - Cities trace file
+% traceFile{3} = readmatrix('ge_tour_40mbps_60fps'); %Google Earth VR - Tour trace file
+% traceFile{4} = readmatrix('ge_tour_40mbps_30fps'); %Google Earth VR - Tour VR trace file
+% traceFile{5} = readmatrix('mc_40mbps_60fps'); %Minecraft trace file
+% traceFile{6} = readmatrix('mc_40mbps_30fps'); %Minecraft trace file
+% traceFile{7} = readmatrix('vp_40mbps_60fps'); %Virus Popper trace file
+% traceFile{8} = readmatrix('vp_40mbps_30fps'); %Virus Popper trace file
+traceFile{1} = load('Atlantis/vr_Headset_View_1080p30_30_8000_bytes.mat');
+traceFile{1} = traceFile{1}.frameSizeB;
+traceFile{3} = load('Atlantis/vr_Headset_View_1080p30_30_11000_bytes.mat');
+traceFile{3} = traceFile{3}.frameSizeB;
+traceFile{5} = load('Atlantis/vr_Headset_View_1080p30_30_13000_bytes.mat');
+traceFile{5} = traceFile{5}.frameSizeB;
+traceFile{7} = load('Atlantis/vr_Headset_View_1080p30_30_16000_bytes.mat');
+traceFile{7} = traceFile{7}.frameSizeB;
+traceFile{2} = load('Atlantis/vr_Headset_View_1080p60_60_16000_bytes.mat');
+traceFile{2} = traceFile{2}.frameSizeB;
+traceFile{4} = load('Atlantis/vr_Headset_View_1080p60_60_22000_bytes.mat');
+traceFile{4} = traceFile{4}.frameSizeB;
+traceFile{6} = load('Atlantis/vr_Headset_View_1080p60_60_25000_bytes.mat');
+traceFile{6} = traceFile{6}.frameSizeB;
+traceFile{8} = load('Atlantis/vr_Headset_View_1080p60_60_30000_bytes.mat');
+traceFile{8} = traceFile{8}.frameSizeB;
+
 num_users = 8;
 num_frame = 100;
 %time_slots = 0.0000625*ones(70000,1);
@@ -17,7 +34,7 @@ time_slots = 0.0000625; %Time slot length in seconds
 deadline = 1;
 Burst_Size = zeros(num_frame, num_users);
 t_nxt_frame = zeros(num_frame, num_users);
-
+alpha = 1.618;
 for i=1:num_users
     Burst_Size(:,i) = traceFile{i}(1 : num_frame, 1);  %Represents the trace burst sizes in Bytes
 end

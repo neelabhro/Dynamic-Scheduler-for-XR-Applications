@@ -1,6 +1,7 @@
 %clear;
 clc;
 %testFile = load('vr_Headset_View_1080p30_30_8000_out_bytes.mat');
+testFile = readmatrix('ge_cities_40mbps_60fps');
 %%Reading the input files and initializing the starting vectors
 % traceFile{1} = readmatrix('ge_cities_40mbps_60fps'); %Google Earth VR - Cities trace file
 % traceFile{2} = readmatrix('ge_cities_40mbps_30fps'); %Google Earth VR - Cities trace file
@@ -28,9 +29,9 @@ traceFile{8} = load('Atlantis/vr_Headset_View_1080p60_60_30000_bytes.mat');
 traceFile{8} = traceFile{8}.frameSizeB;
 
 num_users = 8;
-num_frame = 100;
+num_frame = 200;
 %time_slots = 0.0000625*ones(70000,1);
-time_slots = 0.0000625; %Time slot length in seconds
+time_slots = 0.00025; %Time slot length in seconds
 deadline = 1;
 Burst_Size = zeros(num_frame, num_users);
 t_nxt_frame = zeros(num_frame, num_users);
@@ -39,9 +40,18 @@ for i=1:num_users
     Burst_Size(:,i) = traceFile{i}(1 : num_frame, 1);  %Represents the trace burst sizes in Bytes
 end
 % Burst_Size = Burst_Size*0.3;
-for i=1:num_users
-    t_nxt_frame(:,i) = traceFile{i}(1 : num_frame, 2); %Represents the time to next arriving frame in seconds
-end
+% for i=1:num_users
+%     t_nxt_frame(:,i) = traceFile{i}(1 : num_frame, 2); %Represents the time to next arriving frame in seconds
+% end
+
+for i = 1:num_users
+    if mod( i , 2 ) == 0
+        t_nxt_frame(:,i) = 1/60*ones(num_frame,1)';
+    else
+        t_nxt_frame(:,i) = 1/30*ones(num_frame,1)';
+    end
+end    
+
 
 t_arrival = zeros(length(t_nxt_frame),num_users);
 
@@ -150,7 +160,7 @@ p = length(n_pack_burst);
 for i = 1:num_users
     packets{i} = (1:1:length(t_arrival))';
     packets{i}(:,2) = t_arrival(:,i);
-    packets{i}(:,3) = round(n_pack_burst(:,i));
+    packets{i}(:,3) = ceil(n_pack_burst(:,i));
     packets{i}(:,4) = QoE(:,i);
 end    
 

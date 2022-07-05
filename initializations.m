@@ -28,7 +28,7 @@ traceFile{6} = traceFile{6}.frameSizeB;
 traceFile{8} = load('Atlantis/vr_Headset_View_1080p60_60_30000_bytes.mat');
 traceFile{8} = traceFile{8}.frameSizeB;
 
-num_users = 4;
+num_users = 8;
 num_frame = 100;
 %time_slots = 0.0000625*ones(70000,1);
 %time_slots = 0.00025; %Time slot length in seconds
@@ -36,7 +36,8 @@ time_slots = 0.0000625;
 deadline = 1;
 Burst_Size = zeros(num_frame, num_users);
 t_nxt_frame = zeros(num_frame, num_users);
-alpha = 1.618;
+%alpha = 1.618;
+alpha = 2;
 for i=1:num_users
     Burst_Size(:,i) = traceFile{i}(201 : 200 + num_frame, 1);  %Represents the trace burst sizes in Bytes
 end
@@ -61,7 +62,7 @@ t_arrival = zeros(length(t_nxt_frame),num_users);
 %num_users(2*length(num_users)/3 : end) = 3;
 
 %btime = zeros(100,1);
-initial_QoE = ones(100,98);
+
 for i = 1:length(t_arrival)
     for j = 1:num_users
         t_arrival(i+1,j) = t_nxt_frame(i,j) + t_arrival(i,j);
@@ -69,6 +70,17 @@ for i = 1:length(t_arrival)
     end
 end    
 
+Burst_Size(1:2,2) = 0;
+t_arrival(1:2,2) = 0;
+
+Burst_Size(1:4,3) = 0;
+t_arrival(1:4,3) = 0;
+
+Burst_Size(1:3,4) = 0;
+t_arrival(1:3,4) = 0;
+
+Burst_Size(1:6,6) = 0;
+t_arrival(1:6,6) = 0;
 
 t_arrival = t_arrival(1:length(t_nxt_frame),:);
 jitter = normrnd(0,0.002,[length(t_arrival),num_users]);

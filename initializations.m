@@ -37,7 +37,7 @@ deadline = 1;
 Burst_Size = zeros(num_frame, num_users);
 t_nxt_frame = zeros(num_frame, num_users);
 %alpha = 1.618;
-alpha = 2;
+alpha = 1;
 for i=1:num_users
     Burst_Size(:,i) = traceFile{i}(201 : 200 + num_frame, 1);  %Represents the trace burst sizes in Bytes
 end
@@ -84,6 +84,8 @@ t_arrival(1:6,6) = 0;
 
 t_arrival = t_arrival(1:length(t_nxt_frame),:);
 jitter = normrnd(0,0.002,[length(t_arrival),num_users]);
+jitter(jitter < 0) = 0;
+jitter(jitter > 0.004) = 0.004;
 t_arrival = t_arrival + jitter;
 %T_arrival provides the arrival time of all the frames, with each column
 %corresponding to each user's frames

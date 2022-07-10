@@ -13,9 +13,9 @@ for i = 1:num_users
     scheduled_order = [Virtual_Queue{i}; scheduled_order];
 end
 %scheduled_order = [btime(:,1); btime(:,2)];
-for i = 1:length(scheduled_order)
-    scheduled_order(i,5) = scheduled_order(i,1) + deadline;
-end
+% for i = 1:length(scheduled_order)
+%     scheduled_order(i,5) = scheduled_order(i,1) + deadline;
+% end
 
 [temp_order, temp_order_indices] = sort(scheduled_order(:,5));
 

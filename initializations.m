@@ -174,11 +174,15 @@ p = length(n_pack_burst);
 %Column2 = Frame Deadline
 %Column3 = Num_Packets for that frame
 %Column4 = QoE for that user
+t_deadline = t_arrival(2:end,:);
+t_deadline(num_frame,:) = 5*ones(num_users,1);
+
 for i = 1:num_users
     packets{i} = (1:1:length(t_arrival))';
     packets{i}(:,2) = t_arrival(:,i);
     packets{i}(:,3) = ceil(n_pack_burst(:,i));
     packets{i}(:,4) = QoE(:,i);
+    packets{i}(:,5) = t_deadline(:,i);
 end    
 
 %for i = 1:num_frame

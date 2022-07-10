@@ -9,13 +9,22 @@ function [scheduled_order, waiting_time, system_time, delayed_order, weighted_th
 %scheduled_order = zeros(length(time_slots)*2,2);
 delayed_order = [];
 scheduled_order = [];
+new_scheduled_order = [];
+%Scheduled Order Column Representations:
+%Col 1: t_arrival
+%Col 2: Frame number
+%Col 3: User Number
+%Col 4: QoE Order
+%Col 5: Deadline of the packet
+%Col 6: Elapsed time(Time at which the packet was slotted)
+
 for i = 1:num_users
     scheduled_order = [Virtual_Queue{i}; scheduled_order];
 end
 %scheduled_order = [btime(:,1); btime(:,2)];
-for i = 1:length(scheduled_order)
-    scheduled_order(i,5) = scheduled_order(i,1) + deadline;
-end
+% for i = 1:length(scheduled_order)
+%     scheduled_order(i,5) = scheduled_order(i,1) + deadline;
+% end
 [temp_order, temp_order_indices] = sort(scheduled_order(:,5));
 
 if size(scheduled_order,2) > 1
@@ -28,35 +37,46 @@ end
 
 
 
-
+B = length(scheduled_order);
 for i = 1:length(scheduled_order)
     [Max_QoE, Max_QoE_index] = max(scheduled_order(:,4));
     if scheduled_order(i,4) >= (1/alpha)*Max_QoE
         scheduled_order(i,6) = i*time_slots;
+        new_scheduled_order(i,1) = i*time_slots;
 
-        if scheduled_order(i,6) < scheduled_order(i,1)
-            b = [0, 0, 0, 0, 0, i*time_slots];
-            c = [scheduled_order(i,1), scheduled_order(i,2), scheduled_order(i,3),scheduled_order(i,4), scheduled_order(i,5), (i+1)*time_slots];
-            d = [scheduled_order(i+1:end,1), scheduled_order(i+1:end,2), scheduled_order(i+1:end,3), scheduled_order(i+1:end,4), scheduled_order(i+1:end,5), (((i+2:length(scheduled_order(i+1:end,1)) + (i+1)))*time_slots)'];
-            scheduled_order = [scheduled_order(1:i-1,:) ;b; c; d];
-            scheduled_order  = [scheduled_order; zeros(20,6)];
-        end
+%         if scheduled_order(i,6) < scheduled_order(i,1)
+%             b = [0, 0, 0, 0, 0, i*time_slots];
+%             c = [scheduled_order(i,1), scheduled_order(i,2), scheduled_order(i,3),scheduled_order(i,4), scheduled_order(i,5), (i+1)*time_slots];
+%             d = [scheduled_order(i+1:end,1), scheduled_order(i+1:end,2), scheduled_order(i+1:end,3), scheduled_order(i+1:end,4), scheduled_order(i+1:end,5), (((i+2:length(scheduled_order(i+1:end,1)) + (i+1)))*time_slots)'];
+%             scheduled_order = [scheduled_order(1:i-1,:) ;b; c; d];
+%             scheduled_order  = [scheduled_order; zeros(20,6)];
+%         end
     else
         scheduled_order(i,6) = Max_QoE_index*time_slots;
-        scheduled_order(Max_QoE_index,:) = [];
-        if scheduled_order(i,6) < scheduled_order(i,1)
-            b = [0, 0, 0, 0, 0, i*time_slots];
-            c = [scheduled_order(i,1), scheduled_order(i,2), scheduled_order(i,3),scheduled_order(i,4), scheduled_order(i,5), (i+1)*time_slots];
-            d = [scheduled_order(i+1:end,1), scheduled_order(i+1:end,2), scheduled_order(i+1:end,3), scheduled_order(i+1:end,4), scheduled_order(i+1:end,5), (((i+2:length(scheduled_order(i+1:end,1)) + (i+1)))*time_slots)'];
-            scheduled_order = [scheduled_order(1:i-1,:) ;b; c; d];
-            scheduled_order  = [scheduled_order; zeros(20,6)];
-        end
+        %scheduled_order(Max_QoE_index,:) = [];
+%         if scheduled_order(i,6) < scheduled_order(i,1)
+%             b = [0, 0, 0, 0, 0, i*time_slots];
+%             c = [scheduled_order(i,1), scheduled_order(i,2), scheduled_order(i,3),scheduled_order(i,4), scheduled_order(i,5), (i+1)*time_slots];
+%             d = [scheduled_order(i+1:end,1), scheduled_order(i+1:end,2), scheduled_order(i+1:end,3), scheduled_order(i+1:end,4), scheduled_order(i+1:end,5), (((i+2:length(scheduled_order(i+1:end,1)) + (i+1)))*time_slots)'];
+%             scheduled_order = [scheduled_order(1:i-1,:) ;b; c; d];
+%             scheduled_order  = [scheduled_order; zeros(20,6)];
+%         end
 
     end
     weighted_throughput = sum(scheduled_order(:,4));
 end
 
+scheduled_order  = [scheduled_order; zeros(size(scheduled_order))];
+scheduled_order  = [scheduled_order; zeros(size(scheduled_order))];
 
+for i = 1:length(scheduled_order)
+   if scheduled_order(i,6) < scheduled_order(i,1)
+       b = [0, 0, 0, 0, 0, i*time_slots];
+       c = [scheduled_order(i,1), scheduled_order(i,2), scheduled_order(i,3),scheduled_order(i,4), scheduled_order(i,5), (i+1)*time_slots];
+       d = [scheduled_order(i+1:end,1), scheduled_order(i+1:end,2), scheduled_order(i+1:end,3), scheduled_order(i+1:end,4), scheduled_order(i+1:end,5), (((i+2:length(scheduled_order(i+1:end,1)) + (i+1)))*time_slots)'];
+       scheduled_order = [scheduled_order(1:i-1,:) ;b; c; d];
+   end
+end 
 
 
 
@@ -68,13 +88,6 @@ end
 % end 
 % time_slots_col(i+2:(length(scheduled_order) - (i-1))) 
 
-%Scheduled Order Column Representations:
-%Col 1: t_arrival
-%Col 2: Frame number
-%Col 3: User Number
-%Col 4: QoE Order
-%Col 5: Deadline of the packet
-%Col 6: Elapsed time(Time at which the packet was slotted)
 
 for i = 1:length(scheduled_order)
     if scheduled_order(i,3) == 1

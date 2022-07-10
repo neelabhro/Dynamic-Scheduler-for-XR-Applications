@@ -29,7 +29,7 @@ end
                 %fprintf('Hello')
                 %Virtual_Queue{j}(i,k) = packets{j}(i,2); %Virtual_Queue{j}(i,2) = packets{j}(i,4);
 %num_frame for equals half the number of time slots, represents arrival frames               
-time_slot = 0.0000625*ones(num_frame*10000,1);
+%time_slot = 0.0000625*ones(num_frame*10000,1);
 for i = 1:num_frame
 %for i = 1:length(time_slot)    
     for j = 1:num_users
@@ -38,6 +38,7 @@ for i = 1:num_frame
             packet{j,i}(k,2) = i;
             packet{j,i}(k,3) = j;
             packet{j,i}(k,4) = packets{j}(i,4);
+            packet{j,i}(k,5) = packets{j}(i,5);
         end
     end   
     Virtual_Queue{1} = (cat(1, packet{1,:}));

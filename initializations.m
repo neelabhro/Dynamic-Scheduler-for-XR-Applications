@@ -200,9 +200,23 @@ end
 %packet{2} = (cat(1, frame{2,:}));
 %end
     %users.delivered_frames = cell(1,num_users);
-
+figure;
 %mean = cell2mat(struct2cell(File1))
-
+File1 = load('Atlantis results/mean_sys_time1_FCFS.mat');
+File2 = load('Atlantis results/mean_sys_time2_FCFS.mat');
+File3 = load('Atlantis results/mean_sys_time3_FCFS.mat');
+File4 = load('Atlantis results/mean_sys_time4_FCFS.mat');
+File5 = load('Atlantis results/mean_sys_time5_FCFS.mat');
+File6 = load('Atlantis results/mean_sys_time6_FCFS.mat');
+File7 = load('Atlantis results/mean_sys_time7_FCFS.mat');
+File8 = load('Atlantis results/mean_sys_time8_FCFS.mat');
+Mean_sys_time = [cell2mat(struct2cell(File1)), cell2mat(struct2cell(File2)), cell2mat(struct2cell(File3)), cell2mat(struct2cell(File4)), cell2mat(struct2cell(File5)), cell2mat(struct2cell(File6)), cell2mat(struct2cell(File7)), cell2mat(struct2cell(File8))];
+Mean_sys_time = 1000*Mean_sys_time;
+plot(1:8,(Mean_sys_time), 'LineWidth', 4);
+title('Average System time for different #user scenarios');
+%legend('FCFS', 'Round Robin', 'EDF')
+xlabel('#Users');
+ylabel('Time (ms)');
 % 
 % for j = 1:num_users
 %     plot( 1:100, Burst_Size(:,j)./1000);

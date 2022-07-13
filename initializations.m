@@ -28,7 +28,7 @@ traceFile{6} = traceFile{6}.frameSizeB;
 traceFile{8} = load('Atlantis/vr_Headset_View_1080p60_60_30000_bytes.mat');
 traceFile{8} = traceFile{8}.frameSizeB;
 
-num_users = 8;
+num_users = 1;
 num_frame = 100;
 %time_slots = 0.0000625*ones(70000,1);
 %time_slots = 0.00025; %Time slot length in seconds
@@ -70,23 +70,25 @@ for i = 1:length(t_arrival)
     end
 end    
 
-Burst_Size(1:2,2) = 0;
-t_arrival(1:2,2) = 0;
 
-Burst_Size(1:4,3) = 0;
-t_arrival(1:4,3) = 0;
-
-Burst_Size(1:3,4) = 0;
-t_arrival(1:3,4) = 0;
-
-Burst_Size(1:6,6) = 0;
-t_arrival(1:6,6) = 0;
 
 t_arrival = t_arrival(1:length(t_nxt_frame),:);
 jitter = normrnd(0,0.002,[length(t_arrival),num_users]);
 jitter(jitter < 0) = 0;
 jitter(jitter > 0.004) = 0.004;
 t_arrival = t_arrival + jitter;
+
+% Burst_Size(1:2,2) = 0;
+% t_arrival(1:2,2) = 0;
+% 
+% Burst_Size(1:4,3) = 0;
+% t_arrival(1:4,3) = 0;
+% 
+% Burst_Size(1:3,4) = 0;
+% t_arrival(1:3,4) = 0;
+% 
+% Burst_Size(1:6,6) = 0;
+% t_arrival(1:6,6) = 0;
 %T_arrival provides the arrival time of all the frames, with each column
 %corresponding to each user's frames
 %% Defining variables(num_users etc.)
@@ -98,6 +100,7 @@ q = 0.016;            %quantum time- a round-robin scheduler generally employs t
 %fraction of the total number of packets encompassing a frame and taking
 %the time to next frame into account as well
 n_pack_burst = Burst_Size./1320;       %Number of packets per burst 
+total_pack = sum(n_pack_burst);
 av_frame_size = mean(n_pack_burst);
 %[QoE_order, QoE_order_indices] = sort(round(av_frame_size));
 %QoE = ones(length(t_arrival),num_users);

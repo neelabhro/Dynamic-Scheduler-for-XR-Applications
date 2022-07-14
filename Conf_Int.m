@@ -86,13 +86,13 @@ yCI95 = 1000*cell2mat(yCI95);
 Mean_sys_time = [cell2mat(struct2cell(File1)), cell2mat(struct2cell(File2)), cell2mat(struct2cell(File3)), cell2mat(struct2cell(File4)), cell2mat(struct2cell(File5)), cell2mat(struct2cell(File6)), cell2mat(struct2cell(File7)), cell2mat(struct2cell(File8))];
 
 Mean_sys_time = 1000*Mean_sys_time;
-plot(x,(Mean_sys_time));
-%plot(x,(Mean_sys_time), 'LineWidth', 4);
+%plot(x,(Mean_sys_time));
+plot(x,(Mean_sys_time), 'LineWidth', 1);
 hold on;
 % plot(x,(Mean_sys_time+yCI95(1,:)));
 % hold on;
 % plot(x,(Mean_sys_time+yCI95(2,:)));
-patch([x, fliplr(x)], [Mean_sys_time + yCI95(1,:) fliplr(Mean_sys_time + yCI95(2,:))], 'b', 'EdgeColor','none', 'FaceAlpha',0.25)
+patch([x, fliplr(x)], [Mean_sys_time + yCI95(1,:) fliplr(Mean_sys_time + yCI95(2,:))], 'r', 'EdgeColor','none', 'FaceAlpha',0.25, 'LineWidth', 4)
 %patch([x, fliplr(x)], [yCI95(1,:) fliplr(yCI95(2,:))])
 hold off;
 grid

@@ -68,6 +68,10 @@ end
 
 scheduled_order  = [scheduled_order; zeros(size(scheduled_order))];
 scheduled_order  = [scheduled_order; zeros(size(scheduled_order))];
+% scheduled_order  = [scheduled_order; zeros(size(scheduled_order))];
+% scheduled_order  = [scheduled_order; zeros(size(scheduled_order))];
+% scheduled_order  = [scheduled_order; zeros(size(scheduled_order))];
+%scheduled_order  = [scheduled_order; zeros(size(scheduled_order))];
 
 for i = 1:length(scheduled_order)
    if scheduled_order(i,6) < scheduled_order(i,1)

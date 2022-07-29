@@ -28,11 +28,12 @@ traceFile{6} = traceFile{6}.frameSizeB;
 traceFile{8} = load('Atlantis/vr_Headset_View_1080p60_60_30000_bytes.mat');
 traceFile{8} = traceFile{8}.frameSizeB;
 
-num_users = 1;
+num_users = 4;
 num_frame = 100;
 %time_slots = 0.0000625*ones(70000,1);
 %time_slots = 0.00025; %Time slot length in seconds
-time_slots = 0.0000625;
+time_slots = 0.000125;
+%time_slots = 0.0000625;
 deadline = 1;
 Burst_Size = zeros(num_frame, num_users);
 t_nxt_frame = zeros(num_frame, num_users);
@@ -178,7 +179,7 @@ p = length(n_pack_burst);
 %Column3 = Num_Packets for that frame
 %Column4 = QoE for that user
 t_deadline = t_arrival(2:end,:);
-t_deadline(num_frame,:) = 5*ones(num_users,1);
+t_deadline(num_frame,:) = t_deadline(num_frame-1,:) + 0.0333;
 
 for i = 1:num_users
     packets{i} = (1:1:length(t_arrival))';
@@ -220,6 +221,15 @@ title('Average System time for different #user scenarios');
 %legend('FCFS', 'Round Robin', 'EDF')
 xlabel('#Users');
 ylabel('Time (ms)');
+
+%scheduled_order = cell2mat(struct2cell(load('test.mat')));
+
+
+
+
+
+
+
 % 
 % for j = 1:num_users
 %     plot( 1:100, Burst_Size(:,j)./1000);

@@ -28,7 +28,7 @@ traceFile{6} = traceFile{6}.frameSizeB;
 traceFile{8} = load('Atlantis/vr_Headset_View_1080p60_60_30000_bytes.mat');
 traceFile{8} = traceFile{8}.frameSizeB;
 
-num_users = 4;
+num_users = 8;
 num_frame = 100;
 %time_slots = 0.0000625*ones(70000,1);
 %time_slots = 0.00025; %Time slot length in seconds
@@ -106,6 +106,14 @@ av_frame_size = mean(n_pack_burst);
 %[QoE_order, QoE_order_indices] = sort(round(av_frame_size));
 %QoE = ones(length(t_arrival),num_users);
 QoE = repmat(round((av_frame_size)./10),length(t_arrival),1);
+
+for i=1:num_users
+    if mod(i,2) == 0
+        QoE(:,i) = QoE(:,i) + 60/2;
+    else
+        QoE(:,i) = QoE(:,i) + 30/2;
+    end
+end    
 
 %Sort the Scheduled frames according to the QoEs
 %[sorted_QoE, sortQoEIdx] = sort(Initial_QoE,'descend');
@@ -204,27 +212,44 @@ end
 %packet{2} = (cat(1, frame{2,:}));
 %end
     %users.delivered_frames = cell(1,num_users);
-figure;
-%mean = cell2mat(struct2cell(File1))
-File1 = load('Atlantis results/mean_sys_time1_FCFS.mat');
-File2 = load('Atlantis results/mean_sys_time2_FCFS.mat');
-File3 = load('Atlantis results/mean_sys_time3_FCFS.mat');
-File4 = load('Atlantis results/mean_sys_time4_FCFS.mat');
-File5 = load('Atlantis results/mean_sys_time5_FCFS.mat');
-File6 = load('Atlantis results/mean_sys_time6_FCFS.mat');
-File7 = load('Atlantis results/mean_sys_time7_FCFS.mat');
-File8 = load('Atlantis results/mean_sys_time8_FCFS.mat');
-Mean_sys_time = [cell2mat(struct2cell(File1)), cell2mat(struct2cell(File2)), cell2mat(struct2cell(File3)), cell2mat(struct2cell(File4)), cell2mat(struct2cell(File5)), cell2mat(struct2cell(File6)), cell2mat(struct2cell(File7)), cell2mat(struct2cell(File8))];
-Mean_sys_time = 1000*Mean_sys_time;
-plot(1:8,(Mean_sys_time), 'LineWidth', 4);
-title('Average System time for different #user scenarios');
-%legend('FCFS', 'Round Robin', 'EDF')
-xlabel('#Users');
-ylabel('Time (ms)');
+% figure;
+% %mean = cell2mat(struct2cell(File1))
+% File1 = load('Atlantis results/mean_sys_time1_FCFS.mat');
+% File2 = load('Atlantis results/mean_sys_time2_FCFS.mat');
+% File3 = load('Atlantis results/mean_sys_time3_FCFS.mat');
+% File4 = load('Atlantis results/mean_sys_time4_FCFS.mat');
+% File5 = load('Atlantis results/mean_sys_time5_FCFS.mat');
+% File6 = load('Atlantis results/mean_sys_time6_FCFS.mat');
+% File7 = load('Atlantis results/mean_sys_time7_FCFS.mat');
+% File8 = load('Atlantis results/mean_sys_time8_FCFS.mat');
+% Mean_sys_time = [cell2mat(struct2cell(File1)), cell2mat(struct2cell(File2)), cell2mat(struct2cell(File3)), cell2mat(struct2cell(File4)), cell2mat(struct2cell(File5)), cell2mat(struct2cell(File6)), cell2mat(struct2cell(File7)), cell2mat(struct2cell(File8))];
+% Mean_sys_time = 1000*Mean_sys_time;
+% plot(1:8,(Mean_sys_time), 'LineWidth', 4);
+% title('Average System time for different #user scenarios');
+% %legend('FCFS', 'Round Robin', 'EDF')
+% xlabel('#Users');
+% ylabel('Time (ms)');
 
-%scheduled_order = cell2mat(struct2cell(load('test.mat')));
-
-
+%   %scheduled_order = cell2mat(struct2cell(load('Atlantis Results/sched_5_WT_120khz_a1.mat')));
+%   scheduled_order = cell2mat(struct2cell(load('Atlantis Results/sched_3_FCFS_120khz.mat')));
+%   %[scheduled_order] = dropping_policy(scheduled_order);
+%   scheduled_order = scheduled_order(1:26454,:);
+% for i = 1:length(scheduled_order)
+%    if scheduled_order(i,5) < scheduled_order(i,6)
+%        d = [scheduled_order(i+1:end,1), scheduled_order(i+1:end,2), scheduled_order(i+1:end,3), scheduled_order(i+1:end,4), scheduled_order(i+1:end,5), (((i:length(scheduled_order(i+1:end,1)) + (i-1)))*time_slots)'];
+%        scheduled_order = [scheduled_order(1:i-1,:) ; d];
+%    end 
+% end 
+% scheduled_order  = [scheduled_order; zeros(size(scheduled_order)/2)];
+% for i = 1:length(scheduled_order)
+% 
+%    if scheduled_order(i,6) < scheduled_order(i,1)
+%        b = [0, 0, 0, 0, 0, i*time_slots];
+%        c = [scheduled_order(i,1), scheduled_order(i,2), scheduled_order(i,3),scheduled_order(i,4), scheduled_order(i,5), (i+1)*time_slots];
+%        d = [scheduled_order(i+1:end,1), scheduled_order(i+1:end,2), scheduled_order(i+1:end,3), scheduled_order(i+1:end,4), scheduled_order(i+1:end,5), (((i+2:length(scheduled_order(i+1:end,1)) + (i+1)))*time_slots)'];
+%        scheduled_order = [scheduled_order(1:i-1,:) ;b; c; d];
+%    end
+% end
 
 
 

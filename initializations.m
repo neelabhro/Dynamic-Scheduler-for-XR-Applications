@@ -3,31 +3,18 @@ clc;
 %testFile = load('vr_Headset_View_1080p30_30_8000_out_bytes.mat');
 testFile = readmatrix('ge_cities_40mbps_60fps');
 %%Reading the input files and initializing the starting vectors
-% traceFile{1} = readmatrix('ge_cities_40mbps_60fps'); %Google Earth VR - Cities trace file
-% traceFile{2} = readmatrix('ge_cities_40mbps_30fps'); %Google Earth VR - Cities trace file
-% traceFile{3} = readmatrix('ge_tour_40mbps_60fps'); %Google Earth VR - Tour trace file
-% traceFile{4} = readmatrix('ge_tour_40mbps_30fps'); %Google Earth VR - Tour VR trace file
-% traceFile{5} = readmatrix('mc_40mbps_60fps'); %Minecraft trace file
-% traceFile{6} = readmatrix('mc_40mbps_30fps'); %Minecraft trace file
-% traceFile{7} = readmatrix('vp_40mbps_60fps'); %Virus Popper trace file
-% traceFile{8} = readmatrix('vp_40mbps_30fps'); %Virus Popper trace file
-traceFile{1} = load('Atlantis/vr_Headset_View_1080p30_30_8000_bytes.mat');
-traceFile{1} = traceFile{1}.frameSizeB;
-traceFile{3} = load('Atlantis/vr_Headset_View_1080p30_30_11000_bytes.mat');
-traceFile{3} = traceFile{3}.frameSizeB;
-traceFile{5} = load('Atlantis/vr_Headset_View_1080p30_30_13000_bytes.mat');
-traceFile{5} = traceFile{5}.frameSizeB;
-traceFile{7} = load('Atlantis/vr_Headset_View_1080p30_30_16000_bytes.mat');
-traceFile{7} = traceFile{7}.frameSizeB;
-traceFile{2} = load('Atlantis/vr_Headset_View_1080p60_60_16000_bytes.mat');
-traceFile{2} = traceFile{2}.frameSizeB;
-traceFile{4} = load('Atlantis/vr_Headset_View_1080p60_60_22000_bytes.mat');
-traceFile{4} = traceFile{4}.frameSizeB;
-traceFile{6} = load('Atlantis/vr_Headset_View_1080p60_60_25000_bytes.mat');
-traceFile{6} = traceFile{6}.frameSizeB;
-traceFile{8} = load('Atlantis/vr_Headset_View_1080p60_60_30000_bytes.mat');
-traceFile{8} = traceFile{8}.frameSizeB;
 
+traceFiles = dir(fullfile('Atlantis', '*.mat')); % Change to whatever pattern you need.
+for k = 1 : length(traceFiles)
+     baseFileName = traceFiles(k).name;
+     fullFileName = fullfile(traceFiles(k).folder, baseFileName);
+%     fprintf(1, 'Now reading %s\n', fullFileName);
+%     % Now do whatever you want with this file name,
+    traceFileMain{k} = load(fullFileName);
+    traceFile{k} = traceFileMain{k}.frameSizeB;
+end
+
+%number of users
 num_users = 8;
 num_frame = 100;
 %time_slots = 0.0000625*ones(70000,1);
@@ -39,30 +26,21 @@ Burst_Size = zeros(num_frame, num_users);
 t_nxt_frame = zeros(num_frame, num_users);
 %alpha = 1.618;
 alpha = 1;
+
+
 for i=1:num_users
     Burst_Size(:,i) = traceFile{i}(201 : 200 + num_frame, 1);  %Represents the trace burst sizes in Bytes
 end
-% Burst_Size = Burst_Size*0.3;
-% for i=1:num_users
-%     t_nxt_frame(:,i) = traceFile{i}(1 : num_frame, 2); %Represents the time to next arriving frame in seconds
-% end
+
 
 for i = 1:num_users
-    if mod( i , 2 ) == 0
+    if traceFileMain{i}.fps == 60
         t_nxt_frame(:,i) = 1/60*ones(num_frame,1)';
     else
         t_nxt_frame(:,i) = 1/30*ones(num_frame,1)';
     end
 end    
-
-
 t_arrival = zeros(length(t_nxt_frame),num_users);
-
-%num_users = ones(length(Burst_Size),1);
-%num_users(length(num_users)/3 +1 : 2*length(num_users)/3) = 2;
-%num_users(2*length(num_users)/3 : end) = 3;
-
-%btime = zeros(100,1);
 
 for i = 1:length(t_arrival)
     for j = 1:num_users
@@ -70,8 +48,6 @@ for i = 1:length(t_arrival)
         
     end
 end    
-
-
 
 t_arrival = t_arrival(1:length(t_nxt_frame),:);
 jitter = normrnd(0,0.002,[length(t_arrival),num_users]);

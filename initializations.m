@@ -4,7 +4,7 @@ clc;
 testFile = readmatrix('ge_cities_40mbps_60fps');
 %%Reading the input files and initializing the starting vectors
 
-traceFiles = dir(fullfile('Atlantis', '*.mat')); % Change to whatever pattern you need.
+traceFiles = dir(fullfile('Atlantis', '*.mat'));
 for k = 1 : length(traceFiles)
      baseFileName = traceFiles(k).name;
      fullFileName = fullfile(traceFiles(k).folder, baseFileName);
@@ -32,6 +32,7 @@ for i=1:num_users
     Burst_Size(:,i) = traceFile{i}(201 : 200 + num_frame, 1);  %Represents the trace burst sizes in Bytes
 end
 
+Burst_Size = ceil(repmat((sum(Burst_Size,2)./num_users), [1,num_users]));
 
 for i = 1:num_users
     if traceFileMain{i}.fps == 60
@@ -54,6 +55,8 @@ jitter = normrnd(0,0.002,[length(t_arrival),num_users]);
 jitter(jitter < 0) = 0;
 jitter(jitter > 0.004) = 0.004;
 t_arrival = t_arrival + jitter;
+
+t_arrival = (repmat((sum(t_arrival,2)./num_users), [1,num_users]));
 
 % Burst_Size(1:2,2) = 0;
 % t_arrival(1:2,2) = 0;
@@ -81,15 +84,15 @@ total_pack = sum(n_pack_burst);
 av_frame_size = mean(n_pack_burst);
 %[QoE_order, QoE_order_indices] = sort(round(av_frame_size));
 %QoE = ones(length(t_arrival),num_users);
-QoE = repmat(round((av_frame_size)./10),length(t_arrival),1);
-
-for i=1:num_users
-    if mod(i,2) == 0
-        QoE(:,i) = QoE(:,i) + 60/2;
-    else
-        QoE(:,i) = QoE(:,i) + 30/2;
-    end
-end    
+%QoE = repmat(round((av_frame_size)./10),length(t_arrival),1);
+QoE = repmat((randi([10,50],1, num_users)),[num_frame, 1]);
+% for i=1:num_users
+%     if mod(i,2) == 0
+%         QoE(:,i) = QoE(:,i) + 60/2;
+%     else
+%         QoE(:,i) = QoE(:,i) + 30/2;
+%     end
+% end    
 
 %Sort the Scheduled frames according to the QoEs
 %[sorted_QoE, sortQoEIdx] = sort(Initial_QoE,'descend');

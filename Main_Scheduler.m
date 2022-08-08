@@ -43,9 +43,9 @@ for i = 1:num_frame
     end   
     Virtual_Queue{1} = (cat(1, packet{1,:}));
     Virtual_Queue{2} = (cat(1, packet{2,:}));
-    Virtual_Queue{3} = (cat(1, packet{3,:}));
-    Virtual_Queue{4} = (cat(1, packet{4,:}));
-%    Virtual_Queue{5} = (cat(1, packet{5,:}));
+%     Virtual_Queue{3} = (cat(1, packet{3,:}));
+%     Virtual_Queue{4} = (cat(1, packet{4,:}));
+%     Virtual_Queue{5} = (cat(1, packet{5,:}));
 %     Virtual_Queue{6} = (cat(1, packet{6,:}));
 %     Virtual_Queue{7} = (cat(1, packet{7,:})); 
 %     Virtual_Queue{8} = (cat(1, packet{8,:}));
@@ -102,7 +102,8 @@ end
 %average_waiting_time = sum(waiting_time{2},2)./ sum(waiting_time{2}~=0,2);
 [average_system_time, average_waiting_time] = Plotting(Virtual_Queue, system_time, waiting_time);
 mean_sys_time = mean(average_system_time);
-[scheduled_order] = dropping_policy(scheduled_order);
+% [scheduled_order] = dropping_policy(scheduled_order);
+% [scheduled_order] = dropping_policy(scheduled_order);
 %Initial_Queue = containers.Map(s_no_frames, t_deadline_packets);
 % While new arrival event happens:
 %Initial_Queue(length(s_no_frames) +1) = 5;

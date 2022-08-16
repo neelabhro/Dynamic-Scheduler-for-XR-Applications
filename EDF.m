@@ -1,4 +1,4 @@
-function [scheduled_order, waiting_time, system_time, delayed_order] = EDF(Virtual_Queue, num_users, time_slots, deadline)
+function [scheduled_order, waiting_time, system_time] = EDF(Virtual_Queue, num_users, time_slots)
 %t1 = 0;
 %t2 = 0;
 %wtime = zeros(1,num_users);       %waiting time
@@ -7,16 +7,12 @@ function [scheduled_order, waiting_time, system_time, delayed_order] = EDF(Virtu
 %btime = t_arrival_packet;
 %scheduled_order = zeros(num_users*length(btime));
 %scheduled_order = zeros(length(time_slots)*2,2);
-delayed_order = [];
+
 scheduled_order = [];
 for i = 1:num_users
-    scheduled_order = [Virtual_Queue{i}; scheduled_order];
-end
+    scheduled_order = [Virtual_Queue{i};scheduled_order];
+end    
 %scheduled_order = [btime(:,1); btime(:,2)];
-% for i = 1:length(scheduled_order)
-%     scheduled_order(i,5) = scheduled_order(i,1) + deadline;
-% end
-
 [temp_order, temp_order_indices] = sort(scheduled_order(:,5));
 
 if size(scheduled_order,2) > 1
@@ -25,14 +21,19 @@ if size(scheduled_order,2) > 1
     QoE_order = scheduled_order(:,4);
     deadline_order = scheduled_order(:,5);
     scheduled_order = [scheduled_order(temp_order_indices), frame_order(temp_order_indices), user_order(temp_order_indices), QoE_order(temp_order_indices), deadline_order(temp_order_indices)];
-end
+end  
 
 for i = 1:length(scheduled_order)
     scheduled_order(i,6) = i*time_slots;
-end
+end  
+
 
 scheduled_order  = [scheduled_order; zeros(size(scheduled_order))];
 scheduled_order  = [scheduled_order; zeros(size(scheduled_order))];
+scheduled_order  = [scheduled_order; zeros(size(scheduled_order))];
+scheduled_order  = [scheduled_order; zeros(size(scheduled_order))];
+% scheduled_order  = [scheduled_order; zeros(size(scheduled_order))];
+% scheduled_order  = [scheduled_order; zeros(size(scheduled_order))];
 
 for i = 1:length(scheduled_order)
 %i = 1;
@@ -46,15 +47,13 @@ for i = 1:length(scheduled_order)
    %i = i+1;
 end 
 % time_slots_col(i+2:(length(scheduled_order) - (i-1))) 
-
 %Scheduled Order Column Representations:
 %Col 1: t_arrival
 %Col 2: Frame number
 %Col 3: User Number
-%Col 4: QoE Order
-%Col 5: Deadline of the packet
-%Col 6: Elapsed time(Time at which the packet was slotted)
-
+%Col 4: QoE order
+%Col 5: Deadline Order 
+%Col 6: Elapsed time
 for i = 1:length(scheduled_order)
     if scheduled_order(i,3) == 1
         waiting_time{1}(i) = scheduled_order(i,6) - scheduled_order(i,1);
@@ -88,6 +87,7 @@ for i = 1:length(scheduled_order)
         delayed_order(i) = scheduled_order(i); %Informs which packets were delayed
     end
 end    
+
 
 
 %    for j=1:num_users -1

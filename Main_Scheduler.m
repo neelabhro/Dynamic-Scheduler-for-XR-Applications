@@ -34,11 +34,13 @@ for n = 1:num_sim
         %Virtual_Queue{8} = (cat(1, packet{8,:}));
 
         [scheduled_order_FCFS, waiting_time, system_time] = FCFS(Virtual_Queue, simulated_users, time_slots);
-        %[scheduled_order_EDF, waiting_time, system_time] = EDF(Virtual_Queue, simulated_users, time_slots);
-        %[scheduled_order_RR, user_index, system_time, waiting_time ] = Round_Robin(Virtual_Queue, simulated_users, time_slots, num_frame);
+        [scheduled_order_EDF, waiting_time, system_time] = EDF(Virtual_Queue, simulated_users, time_slots);
+        [scheduled_order_RR, user_index, system_time, waiting_time ] = Round_Robin(Virtual_Queue, simulated_users, time_slots, num_frame);
         %[scheduled_order_Wt_Thpt, DON_scheduled_order, waiting_time, system_time, delayed_order, weighted_throughput] = Wt_Thpt(Virtual_Queue, simulated_users, time_slots,deadline, alpha);
      end
      schedule_sim_FCFS{n} = scheduled_order_FCFS;
+     schedule_sim_EDF{n} = scheduled_order_EDF;
+     schedule_sim_RR{n} = scheduled_order_RR;
      user_selection{n} = selected_users;
 end
 

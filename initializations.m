@@ -8,15 +8,31 @@ traceFiles = dir(fullfile('Atlantis', '*.mat'));
 for k = 1 : length(traceFiles)
      baseFileName = traceFiles(k).name;
      fullFileName = fullfile(traceFiles(k).folder, baseFileName);
-%     fprintf(1, 'Now reading %s\n', fullFileName);
-%     % Now do whatever you want with this file name,
     traceFileMain{k} = load(fullFileName);
     traceFile{k} = traceFileMain{k}.frameSizeB;
 end
 
-%number of users
+
+% traceFile{1} = load('Atlantis/vr_Headset_View_1080p30_30_8000_bytes.mat');
+% traceFile{1} = traceFile{1}.frameSizeB;
+% traceFile{3} = load('Atlantis/vr_Headset_View_1080p30_30_11000_bytes.mat');
+% traceFile{3} = traceFile{3}.frameSizeB;
+% traceFile{5} = load('Atlantis/vr_Headset_View_1080p30_30_13000_bytes.mat');
+% traceFile{5} = traceFile{5}.frameSizeB;
+% traceFile{7} = load('Atlantis/vr_Headset_View_1080p30_30_16000_bytes.mat');
+% traceFile{7} = traceFile{7}.frameSizeB;
+% traceFile{2} = load('Atlantis/vr_Headset_View_1080p60_60_16000_bytes.mat');
+% traceFile{2} = traceFile{2}.frameSizeB;
+% traceFile{4} = load('Atlantis/vr_Headset_View_1080p60_60_22000_bytes.mat');
+% traceFile{4} = traceFile{4}.frameSizeB;
+% traceFile{6} = load('Atlantis/vr_Headset_View_1080p60_60_25000_bytes.mat');
+% traceFile{6} = traceFile{6}.frameSizeB;
+% traceFile{8} = load('Atlantis/vr_Headset_View_1080p60_60_30000_bytes.mat');
+% traceFile{8} = traceFile{8}.frameSizeB;
+
 num_users = 8;
-num_frame = 100;
+num_frame = 25;
+num_sim = 2;
 %time_slots = 0.0000625*ones(70000,1);
 %time_slots = 0.00025; %Time slot length in seconds
 time_slots = 0.000125;
@@ -26,14 +42,21 @@ Burst_Size = zeros(num_frame, num_users);
 t_nxt_frame = zeros(num_frame, num_users);
 %alpha = 1.618;
 alpha = 1;
-
-
 for i=1:num_users
     Burst_Size(:,i) = traceFile{i}(201 : 200 + num_frame, 1);  %Represents the trace burst sizes in Bytes
 end
+% Burst_Size = Burst_Size*0.3;
+% for i=1:num_users
+%     t_nxt_frame(:,i) = traceFile{i}(1 : num_frame, 2); %Represents the time to next arriving frame in seconds
+% end
 
-Burst_Size = ceil(repmat((sum(Burst_Size,2)./num_users), [1,num_users]));
-
+% for i = 1:num_users
+%     if mod( i , 2 ) == 0
+%         t_nxt_frame(:,i) = 1/60*ones(num_frame,1)';
+%     else
+%         t_nxt_frame(:,i) = 1/30*ones(num_frame,1)';
+%     end
+% end    
 for i = 1:num_users
     if traceFileMain{i}.fps == 60
         t_nxt_frame(:,i) = 1/60*ones(num_frame,1)';
@@ -43,6 +66,12 @@ for i = 1:num_users
 end    
 t_arrival = zeros(length(t_nxt_frame),num_users);
 
+%num_users = ones(length(Burst_Size),1);
+%num_users(length(num_users)/3 +1 : 2*length(num_users)/3) = 2;
+%num_users(2*length(num_users)/3 : end) = 3;
+
+%btime = zeros(100,1);
+
 for i = 1:length(t_arrival)
     for j = 1:num_users
         t_arrival(i+1,j) = t_nxt_frame(i,j) + t_arrival(i,j);
@@ -50,13 +79,12 @@ for i = 1:length(t_arrival)
     end
 end    
 
+
 t_arrival = t_arrival(1:length(t_nxt_frame),:);
 jitter = normrnd(0,0.002,[length(t_arrival),num_users]);
 jitter(jitter < 0) = 0;
 jitter(jitter > 0.004) = 0.004;
 t_arrival = t_arrival + jitter;
-
-t_arrival = (repmat((sum(t_arrival,2)./num_users), [1,num_users]));
 
 % Burst_Size(1:2,2) = 0;
 % t_arrival(1:2,2) = 0;
@@ -84,15 +112,7 @@ total_pack = sum(n_pack_burst);
 av_frame_size = mean(n_pack_burst);
 %[QoE_order, QoE_order_indices] = sort(round(av_frame_size));
 %QoE = ones(length(t_arrival),num_users);
-%QoE = repmat(round((av_frame_size)./10),length(t_arrival),1);
-QoE = repmat((randi([10,50],1, num_users)),[num_frame, 1]);
-% for i=1:num_users
-%     if mod(i,2) == 0
-%         QoE(:,i) = QoE(:,i) + 60/2;
-%     else
-%         QoE(:,i) = QoE(:,i) + 30/2;
-%     end
-% end    
+QoE = repmat(round((av_frame_size)./10),length(t_arrival),1);
 
 %Sort the Scheduled frames according to the QoEs
 %[sorted_QoE, sortQoEIdx] = sort(Initial_QoE,'descend');
@@ -209,10 +229,8 @@ end
 % xlabel('#Users');
 % ylabel('Time (ms)');
 
-%   %scheduled_order = cell2mat(struct2cell(load('Atlantis Results/sched_5_WT_120khz_a1.mat')));
-%   scheduled_order = cell2mat(struct2cell(load('Atlantis Results/sched_3_FCFS_120khz.mat')));
-%   %[scheduled_order] = dropping_policy(scheduled_order);
-%   scheduled_order = scheduled_order(1:26454,:);
+% scheduled_order = cell2mat(struct2cell(load('Atlantis results/sched_5_WT_120khz_aOPT.mat')));
+% scheduled_order = scheduled_order(1:26469,:);
 % for i = 1:length(scheduled_order)
 %    if scheduled_order(i,5) < scheduled_order(i,6)
 %        d = [scheduled_order(i+1:end,1), scheduled_order(i+1:end,2), scheduled_order(i+1:end,3), scheduled_order(i+1:end,4), scheduled_order(i+1:end,5), (((i:length(scheduled_order(i+1:end,1)) + (i-1)))*time_slots)'];

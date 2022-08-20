@@ -3,8 +3,13 @@ function [scheduled_order, user_index, system_time, waiting_time ] = Round_Robin
 
 scheduled_order = [];
 user_index = [];
+max_len = zeros(num_users,1);
+for i = 1:num_users
+    max_len(i) = length(Virtual_Queue{i});
+end
+max_length = max(max_len);
 
-for i = 1:(length(Virtual_Queue{1,6}))
+for i = 1:(max_length)
     for j = 1:num_users
     %for k = 1:length(Virtual_Queue{j})
         if i < length(Virtual_Queue{j})
@@ -21,11 +26,11 @@ end
 
 scheduled_order  = [scheduled_order; zeros(size(scheduled_order))];
 scheduled_order  = [scheduled_order; zeros(size(scheduled_order))];
+%  scheduled_order  = [scheduled_order; zeros(size(scheduled_order))];
+%  scheduled_order  = [scheduled_order; zeros(size(scheduled_order))];
+%  scheduled_order  = [scheduled_order; zeros(size(scheduled_order))];
+%  scheduled_order  = [scheduled_order; zeros(size(scheduled_order))];
 % scheduled_order  = [scheduled_order; zeros(size(scheduled_order))];
-%scheduled_order  = [scheduled_order; zeros(size(scheduled_order))];
-%scheduled_order  = [scheduled_order; zeros(size(scheduled_order))];
-%scheduled_order  = [scheduled_order; zeros(size(scheduled_order))];
-%scheduled_order  = [scheduled_order; zeros(size(scheduled_order))];
 
 for i = 1:length(scheduled_order)
    if scheduled_order(i,6) < scheduled_order(i,1)

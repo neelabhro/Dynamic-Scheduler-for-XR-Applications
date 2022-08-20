@@ -31,8 +31,8 @@ end
 % traceFile{8} = traceFile{8}.frameSizeB;
 
 num_users = 8;
-num_frame = 25;
-num_sim = 2;
+num_frame = 10;
+num_sim = 500;
 %time_slots = 0.0000625*ones(70000,1);
 %time_slots = 0.00025; %Time slot length in seconds
 time_slots = 0.000125;
@@ -81,10 +81,7 @@ end
 
 
 t_arrival = t_arrival(1:length(t_nxt_frame),:);
-jitter = normrnd(0,0.002,[length(t_arrival),num_users]);
-jitter(jitter < 0) = 0;
-jitter(jitter > 0.004) = 0.004;
-t_arrival = t_arrival + jitter;
+
 
 % Burst_Size(1:2,2) = 0;
 % t_arrival(1:2,2) = 0;
@@ -187,7 +184,10 @@ p = length(n_pack_burst);
 %Column4 = QoE for that user
 t_deadline = t_arrival(2:end,:);
 t_deadline(num_frame,:) = t_deadline(num_frame-1,:) + 0.0333;
-
+jitter = normrnd(0,0.002,[length(t_arrival),num_users]);
+jitter(jitter < 0) = 0;
+jitter(jitter > 0.004) = 0.004;
+t_arrival = t_arrival + jitter;
 for i = 1:num_users
     packets{i} = (1:1:length(t_arrival))';
     packets{i}(:,2) = t_arrival(:,i);
@@ -229,24 +229,6 @@ end
 % xlabel('#Users');
 % ylabel('Time (ms)');
 
-% scheduled_order = cell2mat(struct2cell(load('Atlantis results/sched_5_WT_120khz_aOPT.mat')));
-% scheduled_order = scheduled_order(1:26469,:);
-% for i = 1:length(scheduled_order)
-%    if scheduled_order(i,5) < scheduled_order(i,6)
-%        d = [scheduled_order(i+1:end,1), scheduled_order(i+1:end,2), scheduled_order(i+1:end,3), scheduled_order(i+1:end,4), scheduled_order(i+1:end,5), (((i:length(scheduled_order(i+1:end,1)) + (i-1)))*time_slots)'];
-%        scheduled_order = [scheduled_order(1:i-1,:) ; d];
-%    end 
-% end 
-% scheduled_order  = [scheduled_order; zeros(size(scheduled_order)/2)];
-% for i = 1:length(scheduled_order)
-% 
-%    if scheduled_order(i,6) < scheduled_order(i,1)
-%        b = [0, 0, 0, 0, 0, i*time_slots];
-%        c = [scheduled_order(i,1), scheduled_order(i,2), scheduled_order(i,3),scheduled_order(i,4), scheduled_order(i,5), (i+1)*time_slots];
-%        d = [scheduled_order(i+1:end,1), scheduled_order(i+1:end,2), scheduled_order(i+1:end,3), scheduled_order(i+1:end,4), scheduled_order(i+1:end,5), (((i+2:length(scheduled_order(i+1:end,1)) + (i+1)))*time_slots)'];
-%        scheduled_order = [scheduled_order(1:i-1,:) ;b; c; d];
-%    end
-% end
 
 
 

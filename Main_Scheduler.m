@@ -8,7 +8,7 @@ initializations
 simulated_users = 4;
 for n = 1:num_sim
     selected_users = randi([1 8],1,simulated_users);
-
+    QoE = repmat(randi([10 50],1,num_users),length(t_arrival),1);
 %     for i = 1:simulated_users
 %         Virtual_Queue{i} = zeros(length(time_slots),2);
 %         %Dropped_Queue{i} = zeros(length(time_slots),2);
@@ -20,7 +20,7 @@ for n = 1:num_sim
                 packet{j,i}(k,1) = packets{selected_users(j)}(i,2);
                 packet{j,i}(k,2) = i;
                 packet{j,i}(k,3) = selected_users(j);
-                packet{j,i}(k,4) = packets{selected_users(j)}(i,4);
+                packet{j,i}(k,4) = QoE(i,j);
                 packet{j,i}(k,5) = packets{selected_users(j)}(i,5);
             end
         end
@@ -42,6 +42,7 @@ for n = 1:num_sim
      schedule_sim_EDF{n} = scheduled_order_EDF;
      schedule_sim_RR{n} = scheduled_order_RR;
      user_selection{n} = selected_users;
+     QoE_selection{n} = QoE(1,:);
 end
 
 % [average_system_time, average_waiting_time] = Plotting(Virtual_Queue, system_time, waiting_time);

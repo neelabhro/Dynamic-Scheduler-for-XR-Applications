@@ -47,8 +47,16 @@ for i = 1:length(scheduled_order)
            scheduled_order = [scheduled_order(1:i-1,:) ;c; d];      
        end    
    end
+
 end 
 
+for j = 1:length(scheduled_order)
+   if scheduled_order(j,5) < scheduled_order(j,6)
+       b = [0, 0, 0, 0, 0, 0];
+       d = [scheduled_order(j+1:end,1), scheduled_order(j+1:end,2), scheduled_order(j+1:end,3), scheduled_order(j+1:end,4), scheduled_order(j+1:end,5), (((j:length(scheduled_order(j+1:end,1)) + (j-1)))*time_slots)'];
+       scheduled_order = [scheduled_order(1:j-1,:) ; b; d];
+   end 
+end   
 
 for i = 1:length(scheduled_order)
     if scheduled_order(i,3) == 1

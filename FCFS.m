@@ -30,7 +30,7 @@ end
 
 scheduled_order  = [scheduled_order; zeros(size(scheduled_order))];
 scheduled_order  = [scheduled_order; zeros(size(scheduled_order))];
-% scheduled_order  = [scheduled_order; zeros(size(scheduled_order))];
+%scheduled_order  = [scheduled_order; zeros(size(scheduled_order))];
 % scheduled_order  = [scheduled_order; zeros(size(scheduled_order))];
 % scheduled_order  = [scheduled_order; zeros(size(scheduled_order))];
 % scheduled_order  = [scheduled_order; zeros(size(scheduled_order))];
@@ -46,6 +46,16 @@ for i = 1:length(scheduled_order)
    end
    %i = i+1;
 end 
+% scheduled_order  = [scheduled_order; zeros(size(scheduled_order))];
+% scheduled_order  = [scheduled_order; zeros(size(scheduled_order))];
+
+for j = 1:length(scheduled_order)
+   if scheduled_order(j,5) < scheduled_order(j,6)
+       b = [0, 0, 0, 0, 0, 0];
+       d = [scheduled_order(j+1:end,1), scheduled_order(j+1:end,2), scheduled_order(j+1:end,3), scheduled_order(j+1:end,4), scheduled_order(j+1:end,5), (((j:length(scheduled_order(j+1:end,1)) + (j-1)))*time_slots)'];
+       scheduled_order = [scheduled_order(1:j-1,:) ; b; d];
+   end 
+end   
 % time_slots_col(i+2:(length(scheduled_order) - (i-1))) 
 %Scheduled Order Column Representations:
 %Col 1: t_arrival

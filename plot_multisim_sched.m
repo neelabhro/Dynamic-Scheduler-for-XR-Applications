@@ -40,3 +40,6 @@ hold on;
 plot(1:num_users,Averaged_FCFS_Throughput, LineWidth=2);
 
 legend('RR', 'EDF', 'FCFS');
+xlabel('Number of users');
+ylabel('Average Throughput');
+title('Average throughput vs Number of users');

@@ -11,8 +11,7 @@ max_length = max(max_len);
 
 for i = 1:(max_length)
     for j = 1:num_users
-    %for k = 1:length(Virtual_Queue{j})
-        if i < length(Virtual_Queue{j})
+        if i <= length(Virtual_Queue{j})
             scheduled_order = [scheduled_order; Virtual_Queue{j}(i,:)];
             user_index = [user_index; j];
         end    
@@ -26,7 +25,7 @@ end
 
 scheduled_order  = [scheduled_order; zeros(size(scheduled_order))];
 scheduled_order  = [scheduled_order; zeros(size(scheduled_order))];
-%  scheduled_order  = [scheduled_order; zeros(size(scheduled_order))];
+%scheduled_order  = [scheduled_order; zeros(size(scheduled_order))];
 %  scheduled_order  = [scheduled_order; zeros(size(scheduled_order))];
 %  scheduled_order  = [scheduled_order; zeros(size(scheduled_order))];
 %  scheduled_order  = [scheduled_order; zeros(size(scheduled_order))];
@@ -34,29 +33,29 @@ scheduled_order  = [scheduled_order; zeros(size(scheduled_order))];
 
 for i = 1:length(scheduled_order)
    if scheduled_order(i,6) < scheduled_order(i,1)
-       if scheduled_order(i+1,6) < scheduled_order(i+1,1)
-           b = [0, 0, 0, 0, 0, i*time_slots];
-           c = [scheduled_order(i,1), scheduled_order(i,2), scheduled_order(i,3),scheduled_order(i,4), scheduled_order(i,5), (i+1)*time_slots];
-           d = [scheduled_order(i+1:end,1), scheduled_order(i+1:end,2), scheduled_order(i+1:end,3), scheduled_order(i+1:end,4), scheduled_order(i+1:end,5), (((i+2:length(scheduled_order(i+1:end,1)) + (i+1)))*time_slots)'];
-           scheduled_order = [scheduled_order(1:i-1,:) ;b; c; d];
+       %if scheduled_order(i+1,6) < scheduled_order(i+1,1)
+       b = [0, 0, 0, 0, 0, i*time_slots];
+       c = [scheduled_order(i,1), scheduled_order(i,2), scheduled_order(i,3),scheduled_order(i,4), scheduled_order(i,5), (i+1)*time_slots];
+       d = [scheduled_order(i+1:end,1), scheduled_order(i+1:end,2), scheduled_order(i+1:end,3), scheduled_order(i+1:end,4), scheduled_order(i+1:end,5), (((i+2:length(scheduled_order(i+1:end,1)) + (i+1)))*time_slots)'];
+       scheduled_order = [scheduled_order(1:i-1,:) ;b; c; d];
 
-       else
-           c = [scheduled_order(i+1,1), scheduled_order(i+1,2), scheduled_order(i+1,3),scheduled_order(i+1,4), scheduled_order(i+1,5), (i+1)*time_slots];
-           d = [scheduled_order(i+1:end,1), scheduled_order(i+1:end,2), scheduled_order(i+1:end,3), scheduled_order(i+1:end,4), scheduled_order(i+1:end,5), (((i+2:length(scheduled_order(i+1:end,1)) + (i+1)))*time_slots)'];
-
-           scheduled_order = [scheduled_order(1:i-1,:) ;c; d];      
-       end    
+%        else
+%            c = [scheduled_order(i+1,1), scheduled_order(i+1,2), scheduled_order(i+1,3),scheduled_order(i+1,4), scheduled_order(i+1,5), (i+1)*time_slots];
+%            d = [scheduled_order(i+1:end,1), scheduled_order(i+1:end,2), scheduled_order(i+1:end,3), scheduled_order(i+1:end,4), scheduled_order(i+1:end,5), (((i+2:length(scheduled_order(i+1:end,1)) + (i+1)))*time_slots)'];
+% 
+%            scheduled_order = [scheduled_order(1:i-1,:) ;c; d];      
+       %end    
    end
 
 end 
 
-for j = 1:length(scheduled_order)
-   if scheduled_order(j,5) < scheduled_order(j,6)
-       b = [0, 0, 0, 0, 0, 0];
-       d = [scheduled_order(j+1:end,1), scheduled_order(j+1:end,2), scheduled_order(j+1:end,3), scheduled_order(j+1:end,4), scheduled_order(j+1:end,5), (((j:length(scheduled_order(j+1:end,1)) + (j-1)))*time_slots)'];
-       scheduled_order = [scheduled_order(1:j-1,:) ; b; d];
-   end 
-end   
+% for j = 1:length(scheduled_order)
+%    if scheduled_order(j,5) < scheduled_order(j,6)
+%        b = [0, 0, 0, 0, 0, 0];
+%        d = [scheduled_order(j+1:end,1), scheduled_order(j+1:end,2), scheduled_order(j+1:end,3), scheduled_order(j+1:end,4), scheduled_order(j+1:end,5), (((j:length(scheduled_order(j+1:end,1)) + (j-1)))*time_slots)'];
+%        scheduled_order = [scheduled_order(1:j-1,:) ; b; d];
+%    end 
+% end   
 
 for i = 1:length(scheduled_order)
     if scheduled_order(i,3) == 1

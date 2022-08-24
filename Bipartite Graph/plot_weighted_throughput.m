@@ -1,5 +1,9 @@
 function [] = plot_weighted_throughput(results)
-[data_point_length, number_of_runs] = size(results);
+
+algos = {'bipartite_matching','fcfs','all_packets'};
+
+legend_names = {'MWBM', 'FCFS', 'Maximum achievable'};
+[data_point_length, number_of_runs] = size(results.(algos{2}));
 dataPoints = 1:1:data_point_length;
 
 p=norminv([0.05 0.95],0,1);
@@ -12,26 +16,52 @@ styleGraphs = {'-','--', ':', '-.'};
 styleNames = {'*','o','s'};
 styleColors = [204 102 0;0, 204, 0;0 128 255]./255;
 
-for n = 1:data_point_length
-    temp_all_results = [];
-    for sim_instance = 1:number_of_runs
-        temp_all_results = [temp_all_results results{n,sim_instance}.val];
-    end
-    weigthed_throughput(n) = mean(temp_all_results);
-    std_dev(n) = std(temp_all_results);
-end
-std_err = std_dev./sqrt(number_of_runs);
-
+algo_index = [1,2];
 figure
-if(errorbars)
-    errorbar(dataPoints,weigthed_throughput,std_err.*p(2),strcat(styleGraphs{1},styleNames{1}),'LineWidth',1.5,'MarkerSize',8,'Color',styleColors(1,:))
-else
-    plot(dataPoints,weigthed_throughput,strcat(styleGraphs{1},styleNames{1}),'LineWidth',1.5,'MarkerSize',8,'Color',styleColors(1,:))
-    hold on    
+
+h=[];
+index=1;
+min_ax=[];
+max_ax=[];
+
+for algo = 1:length(algo_index)
+    
+    i = algo_index(algo);
+    h_algo = plot(-1,-1,['k' strcat(styleGraphs{1},styleNames{algo_index(algo)})]);
+    %hi = semilogy(-1,-1,style_names{i});
+    hold on
+    h(algo) = h_algo;
+    
+    for n = 1:data_point_length
+        temp_all_results.(algos{algo_index(algo)}) = [];
+        for sim_instance = 1:number_of_runs
+            temp_all_results.(algos{algo_index(algo)}) = [temp_all_results.(algos{algo_index(algo)}) results.(algos{algo_index(algo)}){n,sim_instance}.val];
+        end
+        weigthed_throughput(n) = mean(temp_all_results.(algos{algo_index(algo)}));
+        std_dev(n) = std(temp_all_results.(algos{algo_index(algo)}));
+    end
+    std_err = std_dev./sqrt(number_of_runs);
+    
+    
+    if(errorbars)
+        hp_1 = errorbar(dataPoints,weigthed_throughput,std_err.*p(2),strcat(styleGraphs{1},styleNames{algo_index(algo)}),'LineWidth',1.5,'MarkerSize',8,'Color','black');
+        %errorbar(dataPoints,weigthed_throughput,std_err.*p(2),strcat(styleGraphs{1},styleNames{algo_index(algo)}),'LineWidth',1.5,'MarkerSize',8,'Color',styleColors(algo,:))
+        hold on
+    else
+        hp_1 = plot(dataPoints,weigthed_throughput,strcat(styleGraphs{1},styleNames{algo_index(algo)}),'LineWidth',1.5,'MarkerSize',8,'Color','black');
+        %plot(dataPoints,weigthed_throughput,strcat(styleGraphs{1},styleNames{algo_index(algo)}),'LineWidth',1.5,'MarkerSize',8,'Color',styleColors(algo,:))
+        hold on
+    end
+    
+    min_ax=[min_ax min(get(hp_1,'YData'))];
+    max_ax=[max_ax max(get(hp_1,'YData'))];
+    index=index+1;
 end
+
 xlabel('Number of UEs')
 ylabel('Weighted throughput')
-legend('Optimal')
+axis([1 12 1 150000]);
+aghsnd=legend(h',legend_names{algo_index});
 grid on
 
 end

@@ -69,7 +69,7 @@ for data_point = 1:N
         end
         
    
-        [fcfs_val, number_of_packets_per_frame, frame_release_times] = fcfs(users,selected_users,data_point,slot_length);
+        [fcfs_val, number_of_packets_per_frame, frame_release_times, userA, value] = fcfs(users,selected_users,data_point,slot_length);
         
         results.fcfs{data_point,sim_instance}.val = fcfs_val;
         %results.all_packets{data_point,sim_instance}.val = all_packets_value;

@@ -15,6 +15,8 @@ value = {};
 nf = {};
 frame_deadline = {};
 user_id = {};
+scheduled_packets = struct;
+dropped_packets = struct;
 
 for user_number = 1:n
     number_of_packets_per_frame = [(users{selected_users(user_number)}.number_of_packets_per_frame(1:end-1)) ; number_of_packets_per_frame ];
@@ -39,7 +41,6 @@ user_id = cat(1, user_id{:});
 [frame_release_times, sorted_frame_release_times_index] = sort(frame_release_times);
 
 % Reordering the existing elements according to the changed order
-
 nf = nf(sorted_frame_release_times_index);
 frameSizeB = frameSizeB(sorted_frame_release_times_index);
 number_of_packets_per_frame = number_of_packets_per_frame(sorted_frame_release_times_index);
@@ -53,27 +54,35 @@ user = struct('number_of_packets_per_frame', number_of_packets_per_frame, 'frame
 
 %Changing frame level data to packet level data for packet level scheduling
 total_number_of_packets = sum(user.number_of_packets_per_frame);
-% for i = 1:length(frame_release_times)
-% %      new_frame_release_times(i) = (frame_release_times(i).*ones(number_of_packets_per_frame(i),1))';
-%     frame_release_times(i) = repmat(frame_release_times(i), number_of_packets_per_frame(i)');
-% end    
-total_number_of_frames = sum(nf);
+for i = 1:length(frame_release_times)
+      user.frame_release_times(i, 1:user.number_of_packets_per_frame(i)) = (user.frame_release_times(i).*ones(user.number_of_packets_per_frame(i),1));
+      user.frame_deadline(i, 1:user.number_of_packets_per_frame(i)) = (user.frame_deadline(i).*ones(user.number_of_packets_per_frame(i),1));
+      user.frameSizeB(i, 1:user.number_of_packets_per_frame(i)) = (user.frameSizeB(i).*ones(user.number_of_packets_per_frame(i),1));
+      user.value(i, 1:user.number_of_packets_per_frame(i)) = (user.value(i).*ones(user.number_of_packets_per_frame(i),1));
+      user.user_id(i, 1:user.number_of_packets_per_frame(i)) = (user.user_id(i).*ones(user.number_of_packets_per_frame(i),1));
+end    
 
 
 % %Scheduling/Dropping policy
-% while(current_packet_index <= total_packets)
+current_time = 0;
+while(current_packet_index <= total_number_of_packets)
+end    
+throughput = 0;
+for i = 1:length(frame_release_times)
+    for j = 1:length(user.frame_release_times(i))
+        if user.frame_deadline(i,j) > current_time + slot_length
+            scheduled_packets = [scheduled_packets user.frame_deadline(i,j)];
+            scheduled_packet_index = scheduled_packet_index +1;
+            current_packet_index = current_packet_index +1;
+            throughput = throughput + user.value(i,j);
+            current_time = current_time + slot_length;
 
-
-
-
-
-
-
-
-
-
-
-
-
-
+        else
+            dropped_packets = [dropped_packets user.frame_deadline(i,j)];
+            dropped_packet_index = dropped_packet_index +1;
+            current_packet_index = current_packet_index +1;
+            current_time = current_time + slot_length;
+        end
+    end
+end    
 fcfs_val = frame_release_times;

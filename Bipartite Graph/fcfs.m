@@ -1,4 +1,4 @@
-function [fcfs_val, number_of_packets_per_frame, frame_release_times, user, value, total_number_of_packets] = fcfs(users, selected_users, n, slot_length)
+function [fcfs_val, number_of_packets_per_frame, frame_release_times, user, value, total_number_of_packets, throughput, dropped_packets] = fcfs(users, selected_users, n, slot_length)
 
 %Initial definition and concatenation of input data points
 current_packet_index = 0;
@@ -15,8 +15,8 @@ value = {};
 nf = {};
 frame_deadline = {};
 user_id = {};
-scheduled_packets = struct;
-dropped_packets = struct;
+scheduled_packets = {};
+dropped_packets = {};
 
 for user_number = 1:n
     number_of_packets_per_frame = [(users{selected_users(user_number)}.number_of_packets_per_frame(1:end-1)) ; number_of_packets_per_frame ];
@@ -64,9 +64,7 @@ end
 
 
 % %Scheduling/Dropping policy
-current_time = 0;
-while(current_packet_index <= total_number_of_packets)
-end    
+current_time = 0; 
 throughput = 0;
 for i = 1:length(frame_release_times)
     for j = 1:length(user.frame_release_times(i))
@@ -85,4 +83,4 @@ for i = 1:length(frame_release_times)
         end
     end
 end    
-fcfs_val = frame_release_times;
+fcfs_val = throughput;

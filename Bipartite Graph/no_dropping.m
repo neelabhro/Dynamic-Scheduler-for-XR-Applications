@@ -1,4 +1,4 @@
-function [fcfs_val, number_of_packets_per_frame, frame_release_times, user, value, total_number_of_packets, throughput, dropped_packets] = fcfs(users, selected_users, n, slot_length, throughput)
+function [no_dropping_val, number_of_packets_per_frame, frame_release_times, user, value, total_number_of_packets, throughput, dropped_packets] = no_dropping(users, selected_users, n, slot_length, throughput)
 
 %Initial definition and concatenation of input data points
 current_packet_index = 0;
@@ -67,19 +67,20 @@ end
 current_time = 0;
 for i = 1:length(frame_release_times)
     for j = 1:length(user.frame_release_times(i,:))
-        if user.frame_deadline(i,j) >= current_time + slot_length
+%         if user.frame_deadline(i,j) >= current_time + slot_length
             scheduled_packets = [scheduled_packets user.frame_deadline(i,j)];
             scheduled_packet_index = scheduled_packet_index +1;
             current_packet_index = current_packet_index +1;
             throughput = throughput + user.value(i,j);
             current_time = current_time + slot_length;
 
-        elseif (user.frame_deadline(i,j) < current_time + slot_length) && (user.frame_deadline(i,j) ~= 0)
-            dropped_packets = [dropped_packets user.frame_deadline(i,j)];
-            dropped_packet_index = dropped_packet_index +1;
-            current_packet_index = current_packet_index +1;
-            %current_time = current_time + slot_length;
-        end
-    end
+%         elseif (user.frame_deadline(i,j) < current_time + slot_length) && (user.frame_deadline(i,j) ~= 0)
+%             dropped_packets = [dropped_packets user.frame_deadline(i,j)];
+%             dropped_packet_index = dropped_packet_index +1;
+%             current_packet_index = current_packet_index +1;
+%             %current_time = current_time + slot_length;
+%         end
+%
+   end
 end    
-fcfs_val = throughput;
+no_dropping_val = throughput;

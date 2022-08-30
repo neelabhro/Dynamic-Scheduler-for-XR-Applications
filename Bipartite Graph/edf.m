@@ -1,4 +1,4 @@
-function [fcfs_val, number_of_packets_per_frame, frame_release_times, user, value, total_number_of_packets, throughput, dropped_packets] = fcfs(users, selected_users, n, slot_length, throughput)
+function [edf_val, number_of_packets_per_frame, frame_release_times, user, value, total_number_of_packets, throughput, dropped_packets] = edf(users, selected_users, n, slot_length, throughput)
 
 %Initial definition and concatenation of input data points
 current_packet_index = 0;
@@ -38,16 +38,16 @@ fps = cat(1, fps{:});
 nf = cat(1, nf{:});
 user_id = cat(1, user_id{:});
 %Sorting the frame release time according to FCFS policy
-[frame_release_times, sorted_frame_release_times_index] = sort(frame_release_times);
+[frame_deadline, sorted_frame_deadline_index] = sort(frame_deadline);
 
 % Reordering the existing elements according to the changed order
-nf = nf(sorted_frame_release_times_index);
-frameSizeB = frameSizeB(sorted_frame_release_times_index);
-number_of_packets_per_frame = number_of_packets_per_frame(sorted_frame_release_times_index);
-value = value(sorted_frame_release_times_index);
-user_id = user_id(sorted_frame_release_times_index);
-fps = fps(sorted_frame_release_times_index);
-frame_deadline = frame_deadline(sorted_frame_release_times_index);
+nf = nf(sorted_frame_deadline_index);
+frameSizeB = frameSizeB(sorted_frame_deadline_index);
+number_of_packets_per_frame = number_of_packets_per_frame(sorted_frame_deadline_index);
+value = value(sorted_frame_deadline_index);
+user_id = user_id(sorted_frame_deadline_index);
+fps = fps(sorted_frame_deadline_index);
+frame_release_times = frame_release_times(sorted_frame_deadline_index);
 
 user = {};
 user = struct('number_of_packets_per_frame', number_of_packets_per_frame, 'frame_release_times', frame_release_times, 'frameSizeB', frameSizeB, 'fps', fps, 'nf', nf, 'value', value, 'frame_deadline', frame_deadline, 'user_id', user_id);
@@ -82,4 +82,4 @@ for i = 1:length(frame_release_times)
         end
     end
 end    
-fcfs_val = throughput;
+edf_val = throughput;

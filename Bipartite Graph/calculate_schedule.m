@@ -1,4 +1,4 @@
-function [results] = calculate_schedule(path_to_files)
+function [results, users, selected_users] = calculate_schedule(path_to_files)
 %N is the number of users, i.e., trace files
 
 % Check to make sure that folder actually exists.  Warn user if it doesn't.
@@ -58,7 +58,7 @@ end
 % end
 % 
 % users = users_truncuated;
-
+throughput = 0;
 for data_point = 1:N    
     for sim_instance = 1:S        
         for n = 1 : N
@@ -98,16 +98,20 @@ for data_point = 1:N
         
         %call all scheduling algorithms and save corresponding results
         [bipartite_val mi mj] = bipartite_matching(bipartite_graph_matrix);  
-        [fcfs_val] = fcfs(users,selected_users,data_point,slot_length);
+        [fcfs_val] = fcfs(users,selected_users,data_point,slot_length,throughput);
+        [edf_val] = edf(users,selected_users,data_point,slot_length,throughput);
+        %[no_dropping_val] = no_dropping(users,selected_users,data_point,slot_length,throughput);
         
-        all_packets_value = maximum_achievable_throughput(users,selected_users,data_point);
+        %all_packets_value = maximum_achievable_throughput(users,selected_users,data_point);
         
         results.bipartite_matching{data_point,sim_instance}.val = bipartite_val;
         results.bipartite_matching{data_point,sim_instance}.mi = mi;
         results.bipartite_matching{data_point,sim_instance}.mj = mj;
         
         results.fcfs{data_point,sim_instance}.val = fcfs_val;
-        results.all_packets{data_point,sim_instance}.val = all_packets_value;
+        results.edf{data_point,sim_instance}.val = edf_val;
+        %results.no_dropping{data_point,sim_instance}.val = no_dropping_val;
+        %results.all_packets{data_point,sim_instance}.val = all_packets_value;
         fprintf('Simulations running for: data point %i and simulation instace %i.\n',data_point,sim_instance);
     end
 end

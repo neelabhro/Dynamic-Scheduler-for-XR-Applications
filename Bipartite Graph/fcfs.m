@@ -63,11 +63,12 @@ for i = 1:length(frame_release_times)
 end    
 
 
-% %Scheduling/Dropping policy
-current_time = 0; 
+%Scheduling/Dropping policy
+current_time = 0;
 throughput = 0;
 for i = 1:length(frame_release_times)
-    for j = 1:length(user.frame_release_times(i))
+    for j = 1:length(user.frame_release_times(i,:))
+    %while user.frame_release_times(i) ~= 0 
         if user.frame_deadline(i,j) > current_time + slot_length
             scheduled_packets = [scheduled_packets user.frame_deadline(i,j)];
             scheduled_packet_index = scheduled_packet_index +1;

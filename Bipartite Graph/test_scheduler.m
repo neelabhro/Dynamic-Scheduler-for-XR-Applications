@@ -14,10 +14,10 @@ for k = 1 : length(theFiles)
     users_original{k} = load(fullFileName);
 end
 
-
+throughput = 0;
 
 %number of users
-N = 4;
+N = 12;
 
 L = length(theFiles);
 %number of simulation insances
@@ -69,9 +69,11 @@ for data_point = 1:N
         end
         
    
-        [fcfs_val, number_of_packets_per_frame, frame_release_times, userA, value] = fcfs(users,selected_users,data_point,slot_length);
-        
-        results.fcfs{data_point,sim_instance}.val = fcfs_val;
+        %[fcfs_val, number_of_packets_per_frame, frame_release_times, userA, value, total_number_of_packets, throughput, dropped_packets] = fcfs(users,selected_users,data_point,slot_length, throughput);
+        [weight_val, number_of_packets_per_frame, frame_release_times, userA, value, total_number_of_packets, throughput, dropped_packets] = max_weight(users,selected_users,data_point,slot_length, throughput);
+ 
+        %results.fcfs{data_point,sim_instance}.val = fcfs_val;
+        results.max_weight{data_point,sim_instance}.val = weight_val;
         %results.all_packets{data_point,sim_instance}.val = all_packets_value;
         fprintf('Simulations running for: data point %i and simulation instace %i.\n',data_point,sim_instance);
     end

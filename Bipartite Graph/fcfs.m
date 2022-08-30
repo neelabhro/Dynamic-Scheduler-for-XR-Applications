@@ -76,7 +76,7 @@ for i = 1:length(frame_release_times)
             throughput = throughput + user.value(i,j);
             current_time = current_time + slot_length;
 
-        else
+        elseif (user.frame_deadline(i,j) < current_time + slot_length) && user.frame_deadline(i,j) ~= 0 
             dropped_packets = [dropped_packets user.frame_deadline(i,j)];
             dropped_packet_index = dropped_packet_index +1;
             current_packet_index = current_packet_index +1;

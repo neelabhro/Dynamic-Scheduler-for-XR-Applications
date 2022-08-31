@@ -70,7 +70,7 @@ for data_point = 1:N
         
    
         %[fcfs_val, number_of_packets_per_frame, frame_release_times, userA, value, total_number_of_packets, throughput, dropped_packets] = fcfs(users,selected_users,data_point,slot_length, throughput);
-        [weight_val, number_of_packets_per_frame, frame_release_times, userA, value, total_number_of_packets, throughput, dropped_packets] = max_weight(users,selected_users,data_point,slot_length, throughput);
+        [weight_val , scheduled_packets, dropped_packets, packets_ordered] = fcfs_sj(users,selected_users,data_point,slot_length);
  
         %results.fcfs{data_point,sim_instance}.val = fcfs_val;
         results.max_weight{data_point,sim_instance}.val = weight_val;

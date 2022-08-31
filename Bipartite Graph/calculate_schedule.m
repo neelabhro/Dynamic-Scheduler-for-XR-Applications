@@ -25,11 +25,11 @@ end
 
 
 %number of users
-N = 12;
+N = 20;
 
 L = length(theFiles);
 %number of simulation insances
-S = 100;
+S = 150;
 %slot length in ms(depends on the SCS)
 slot_length = 0.125;
 %maximum release time in ms
@@ -99,7 +99,8 @@ for data_point = 1:N
         %call all scheduling algorithms and save corresponding results
         [bipartite_val mi mj] = bipartite_matching(bipartite_graph_matrix);  
         [fcfs_val] = fcfs(users,selected_users,data_point,slot_length,throughput);
-        [edf_val] = edf(users,selected_users,data_point,slot_length,throughput);
+        %[edf_val] = edf(users,selected_users,data_point,slot_length,throughput);
+        [weight_val] = max_weight(users,selected_users,data_point,slot_length,throughput);
         %[no_dropping_val] = no_dropping(users,selected_users,data_point,slot_length,throughput);
         
         %all_packets_value = maximum_achievable_throughput(users,selected_users,data_point);
@@ -109,11 +110,11 @@ for data_point = 1:N
         results.bipartite_matching{data_point,sim_instance}.mj = mj;
         
         results.fcfs{data_point,sim_instance}.val = fcfs_val;
-        results.edf{data_point,sim_instance}.val = edf_val;
+%         results.edf{data_point,sim_instance}.val = edf_val;
         %results.no_dropping{data_point,sim_instance}.val = no_dropping_val;
         %results.all_packets{data_point,sim_instance}.val = all_packets_value;
+        results.max_weight{data_point,sim_instance}.val = weight_val;
         fprintf('Simulations running for: data point %i and simulation instace %i.\n',data_point,sim_instance);
     end
 end
 end
-

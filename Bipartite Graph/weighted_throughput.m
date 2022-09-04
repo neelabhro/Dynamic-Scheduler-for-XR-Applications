@@ -96,12 +96,22 @@ while(temp_packet_index <= total_number_of_packets)
             temp_packet_index = temp_packet_index + 1;
             dropped_packet_index = dropped_packet_index + 1;
         end
+    
     else
 
+        packets_ordered.available_packets = find(packets_ordered.release_times <= current_time_instance );
+        available_packets.values = packets_ordered.values(packets_ordered.available_packets);
+        available_packets.packet_id = packets_ordered.packet_id(packets_ordered.available_packets);
+        available_packets.release_times = packets_ordered.release_times(packets_ordered.available_packets);
+        available_packets.corresponding_frameSizeB = packets_ordered.corresponding_frameSizeB(packets_ordered.available_packets);
+        available_packets.deadlines = packets_ordered.deadlines(packets_ordered.available_packets);
+        available_packets.corresponding_frame_number_of_packets_per_frame = packets_ordered.corresponding_frame_number_of_packets_per_frame(packets_ordered.available_packets);
+        available_packets.corresponding_frames_index = packets_ordered.corresponding_frames_index(packets_ordered.available_packets);
+        available_packets.user_id = packets_ordered.user_id(packets_ordered.available_packets);
+
+        [available_packets.values, available_packets_values_index] = sort(available_packets.values, 'descend');
 
 
-
-        
         if(packets_ordered.deadlines(temp_packet_index) >= current_time_instance + slot_length)
             scheduled_packets.packet_id(scheduled_packet_index + 1) = packets_ordered.packet_id(temp_packet_index);
             scheduled_packets.corresponding_frameSizeB(scheduled_packet_index + 1) = packets_ordered.corresponding_frameSizeB(temp_packet_index);

@@ -110,34 +110,42 @@ while(temp_packet_index <= total_number_of_packets)
         available_packets.user_id = packets_ordered.user_id(packets_ordered.available_packets);
 
         [available_packets.values, available_packets_values_index] = sort(available_packets.values, 'descend');
+        available_packets.packet_id = available_packets.packet_id(available_packets_values_index);
+        available_packets.release_times = available_packets.release_times(available_packets_values_index);
+        available_packets.corresponding_frameSizeB = available_packets.corresponding_frameSizeB(available_packets_values_index);
+        available_packets.deadlines = available_packets.deadlines(available_packets_values_index);
+        available_packets.corresponding_frame_number_of_packets_per_frame = available_packets.corresponding_frame_number_of_packets_per_frame(available_packets_values_index);
+        available_packets.corresponding_frames_index = available_packets.corresponding_frames_index(available_packets_values_index);
+        available_packets.user_id = available_packets.user_id(available_packets_values_index);
 
-
-        if(packets_ordered.deadlines(temp_packet_index) >= current_time_instance + slot_length)
-            scheduled_packets.packet_id(scheduled_packet_index + 1) = packets_ordered.packet_id(temp_packet_index);
-            scheduled_packets.corresponding_frameSizeB(scheduled_packet_index + 1) = packets_ordered.corresponding_frameSizeB(temp_packet_index);
-            scheduled_packets.release_times(scheduled_packet_index + 1) = packets_ordered.release_times(temp_packet_index);
-            scheduled_packets.corresponding_frames_index(scheduled_packet_index + 1) = packets_ordered.corresponding_frames_index(temp_packet_index);
-            scheduled_packets.corresponding_frame_number_of_packets_per_frame(scheduled_packet_index + 1) = packets_ordered.corresponding_frame_number_of_packets_per_frame(temp_packet_index);
-            scheduled_packets.deadlines(scheduled_packet_index + 1) = packets_ordered.deadlines(temp_packet_index);
-            scheduled_packets.values(scheduled_packet_index + 1) = packets_ordered.values(temp_packet_index);
-            scheduled_packets.user_id(scheduled_packet_index + 1) = packets_ordered.user_id(temp_packet_index);
+        for i = 1:length(available_packets.deadlines)
+            if(available_packets.deadlines(i) >= current_time_instance + slot_length)
+                scheduled_packets.packet_id(scheduled_packet_index + 1) = available_packets.packet_id(i);
+                scheduled_packets.corresponding_frameSizeB(scheduled_packet_index + 1) = available_packets.corresponding_frameSizeB(i);
+                scheduled_packets.release_times(scheduled_packet_index + 1) = available_packets.release_times(i);
+                scheduled_packets.corresponding_frames_index(scheduled_packet_index + 1) = available_packets.corresponding_frames_index(i);
+                scheduled_packets.corresponding_frame_number_of_packets_per_frame(scheduled_packet_index + 1) = available_packets.corresponding_frame_number_of_packets_per_frame(i);
+                scheduled_packets.deadlines(scheduled_packet_index + 1) = available_packets.deadlines(i);
+                scheduled_packets.values(scheduled_packet_index + 1) = available_packets.values(i);
+                scheduled_packets.user_id(scheduled_packet_index + 1) = available_packets.user_id(i);
             
-            current_time_instance = current_time_instance + slot_length;
-            temp_packet_index = temp_packet_index + 1;
-            scheduled_packet_index = scheduled_packet_index + 1;
-        else
-            dropped_packets.packet_id(dropped_packet_index + 1) = packets_ordered.packet_id(temp_packet_index);
-            dropped_packets.corresponding_frameSizeB(dropped_packet_index + 1) = packets_ordered.corresponding_frameSizeB(temp_packet_index);
-            dropped_packets.release_times(dropped_packet_index + 1) = packets_ordered.release_times(temp_packet_index);
-            dropped_packets.corresponding_frames_index(dropped_packet_index + 1) = packets_ordered.corresponding_frames_index(temp_packet_index);
-            dropped_packets.corresponding_frame_number_of_packets_per_frame(dropped_packet_index + 1) = packets_ordered.corresponding_frame_number_of_packets_per_frame(temp_packet_index);
-            dropped_packets.deadlines(dropped_packet_index + 1) = packets_ordered.deadlines(temp_packet_index);
-            dropped_packets.values(scheduled_packet_index + 1) = packets_ordered.values(temp_packet_index);
-            dropped_packets.user_id(dropped_packet_index + 1) = packets_ordered.user_id(temp_packet_index);
+                current_time_instance = current_time_instance + slot_length;
+                temp_packet_index = temp_packet_index + 1;
+                scheduled_packet_index = scheduled_packet_index + 1;
+            else
+                dropped_packets.packet_id(dropped_packet_index + 1) = available_packets.packet_id(i);
+                dropped_packets.corresponding_frameSizeB(dropped_packet_index + 1) = available_packets.corresponding_frameSizeB(i);
+                dropped_packets.release_times(dropped_packet_index + 1) = available_packets.release_times(i);
+                dropped_packets.corresponding_frames_index(dropped_packet_index + 1) = available_packets.corresponding_frames_index(i);
+                dropped_packets.corresponding_frame_number_of_packets_per_frame(dropped_packet_index + 1) = available_packets.corresponding_frame_number_of_packets_per_frame(i);
+                dropped_packets.deadlines(dropped_packet_index + 1) = available_packets.deadlines(i);
+                dropped_packets.values(scheduled_packet_index + 1) = available_packets.values(i);
+                dropped_packets.user_id(dropped_packet_index + 1) = available_packets.user_id(i);
             
-            temp_packet_index = temp_packet_index + 1;
-            dropped_packet_index = dropped_packet_index + 1;
-        end
+                temp_packet_index = temp_packet_index + 1;
+                dropped_packet_index = dropped_packet_index + 1;
+            end
+        end    
     end
 end
 total_value = sum(scheduled_packets.values);

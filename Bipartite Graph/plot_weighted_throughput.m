@@ -1,8 +1,8 @@
 function [] = plot_weighted_throughput(results)
 
-algos = {'bipartite_matching','fcfs','all_packets'};
+algos = {'bipartite_matching','edf_alpha', 'maximum_weight' 'fcfs_sj'};
 
-legend_names = {'MWBM', 'FCFS', 'Maximum achievable'};
+legend_names = {'MWBM', 'EDF alpha', 'Maximum Weight' 'FCFS'};
 [data_point_length, number_of_runs] = size(results.(algos{2}));
 dataPoints = 1:1:data_point_length;
 
@@ -12,11 +12,11 @@ errorbars = true;
 weigthed_throughput = zeros(1,data_point_length);
 std_dev = zeros(1,data_point_length);
 
-styleGraphs = {'-','--', ':', '-.'};
-styleNames = {'*','o','s'};
-styleColors = [204 102 0;0, 204, 0;0 128 255]./255;
+styleGraphs = {'-','--', ':', '-.', ':'};
+styleNames = {'*','o','s', 'd', 'x'};
+%styleColors = [204 102 0;0, 204, 0;0 128 255]./255;
 
-algo_index = [1,2];
+algo_index = [1,2,3,4];
 figure
 
 h=[];
@@ -60,7 +60,7 @@ end
 
 xlabel('Number of UEs')
 ylabel('Weighted throughput')
-axis([1 12 1 150000]);
+axis([1 20 1 170000]);
 aghsnd=legend(h',legend_names{algo_index});
 grid on
 

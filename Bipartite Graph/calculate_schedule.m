@@ -26,10 +26,10 @@ end
 
 %number of users
 N = 20;
-
+alpha = 1;
 L = length(theFiles);
 %number of simulation insances
-S = 150;
+S = 10;
 %slot length in ms(depends on the SCS)
 slot_length = 0.125;
 %maximum release time in ms
@@ -42,22 +42,6 @@ for l = 1 : L
     users_original{l}.number_of_packets_per_frame = ceil(users_original{l}.frameSizeB./packet_size); 
 end
 
-%Trace filese too big! Truncate trace files due to memory issue problems. 
-% for n = 1 : N
-%     truncuated_length = ceil(users_original{n}.nf/1000);
-%     trace_slice_lower_bound = randi([1 users_original{n}.nf-truncuated_length],1,1);
-%     trace_slice_upper_bound = trace_slice_lower_bound + truncuated_length;
-%     users_truncuated{n}.avgframeSizekB = users_original{n}.avgframeSizekB;
-%     users_truncuated{n}.fps = users_original{n}.fps;
-%     users_truncuated{n}.frameSizeB = users_original{n}.frameSizeB(trace_slice_lower_bound:trace_slice_upper_bound-1);
-%     users_truncuated{n}.frametype = users_original{n}.frametype(trace_slice_lower_bound:trace_slice_upper_bound-1);
-%     users_truncuated{n}.info = users_original{n}.info;
-%     users_truncuated{n}.nf = truncuated_length;
-%     users_truncuated{n}.number_of_packets_per_frame = users_original{n}.number_of_packets_per_frame(trace_slice_lower_bound:trace_slice_upper_bound-1);
-%     users_truncuated{n}.value = randi(values_range,1);
-% end
-% 
-% users = users_truncuated;
 throughput = 0;
 for data_point = 1:N    
     for sim_instance = 1:S        
@@ -98,9 +82,11 @@ for data_point = 1:N
         
         %call all scheduling algorithms and save corresponding results
         [bipartite_val mi mj] = bipartite_matching(bipartite_graph_matrix);  
-        [fcfs_val] = fcfs(users,selected_users,data_point,slot_length,throughput);
+        [maximum_weight_val] = maximum_weight(users,selected_users,data_point,slot_length);
+        [edf_alpha_val] = edf_alpha(users,selected_users,data_point,slot_length,alpha);
+        [fcfs_val_sj] = fcfs_sj(users,selected_users,data_point,slot_length);
         %[edf_val] = edf(users,selected_users,data_point,slot_length,throughput);
-        [weight_val] = max_weight(users,selected_users,data_point,slot_length,throughput);
+        %[weight_val] = max_weight(users,selected_users,data_point,slot_length,throughput);
         %[no_dropping_val] = no_dropping(users,selected_users,data_point,slot_length,throughput);
         
         %all_packets_value = maximum_achievable_throughput(users,selected_users,data_point);
@@ -109,11 +95,13 @@ for data_point = 1:N
         results.bipartite_matching{data_point,sim_instance}.mi = mi;
         results.bipartite_matching{data_point,sim_instance}.mj = mj;
         
-        results.fcfs{data_point,sim_instance}.val = fcfs_val;
+        results.maximum_weight{data_point,sim_instance}.val = maximum_weight_val;
+        results.edf_alpha{data_point,sim_instance}.val = edf_alpha_val;
+        results.fcfs_sj{data_point,sim_instance}.val = fcfs_val_sj;
 %         results.edf{data_point,sim_instance}.val = edf_val;
         %results.no_dropping{data_point,sim_instance}.val = no_dropping_val;
         %results.all_packets{data_point,sim_instance}.val = all_packets_value;
-        results.max_weight{data_point,sim_instance}.val = weight_val;
+        %results.max_weight{data_point,sim_instance}.val = weight_val;
         fprintf('Simulations running for: data point %i and simulation instace %i.\n',data_point,sim_instance);
     end
 end

@@ -1,4 +1,4 @@
-function [total_value, scheduled_packets, dropped_packets, packets_ordered] = edf_alpha1(users,selected_users,data_point,slot_length, alpha)
+function [total_value , scheduled_packets, dropped_packets, packets_ordered] = edf_alpha1(users,selected_users,data_point,slot_length,alpha)
 
 all_frames_together_release_times = [];
 all_frames_together_frameSizeB = [];
@@ -59,157 +59,104 @@ packets_ordered.values = corresponding_frame_value;
 packets_ordered.user_id = corresponding_frame_user_id;
 
 
+
+
+%max_weight_queue = java.util.PriorityQueue;
+available_packet_queue = [];
+available_packet_queue_ids = [];
 scheduled_packets = struct;
 dropped_packets = struct;
-current_time_instance = 0;
 temp_packet_index = 1;
 scheduled_packet_index = 0;
 dropped_packet_index = 0;
-packet_exclusion_index = 0;
-q = 0;
+temp_available_packet_index = 1;
+head_index = 1;
 
-%Scheduling/Dropping policy
-while(temp_packet_index <= total_number_of_packets)
-    if(current_time_instance < packets_ordered.release_times(temp_packet_index))        
-         current_time_instance = ceil(packets_ordered.release_times(temp_packet_index)/slot_length)*slot_length;
-         
-         packets_ordered.available_packets = find(packets_ordered.release_times <= current_time_instance);
-         available_packets.values = packets_ordered.values(packets_ordered.available_packets);
-         available_packets.packet_id = packets_ordered.packet_id(packets_ordered.available_packets);
-         available_packets.release_times = packets_ordered.release_times(packets_ordered.available_packets);
-         available_packets.corresponding_frameSizeB = packets_ordered.corresponding_frameSizeB(packets_ordered.available_packets);
-         available_packets.deadlines = packets_ordered.deadlines(packets_ordered.available_packets);
-         available_packets.corresponding_frame_number_of_packets_per_frame = packets_ordered.corresponding_frame_number_of_packets_per_frame(packets_ordered.available_packets);
-         available_packets.corresponding_frames_index = packets_ordered.corresponding_frames_index(packets_ordered.available_packets);
-         available_packets.user_id = packets_ordered.user_id(packets_ordered.available_packets);
 
-         [max_val, max_index] = max(available_packets.values);
-        if(packets_ordered.deadlines(max_index) >= current_time_instance + slot_length)
-            scheduled_packets.packet_id(scheduled_packet_index + 1) = available_packets.packet_id(max_index);
-            scheduled_packets.corresponding_frameSizeB(scheduled_packet_index + 1) = available_packets.corresponding_frameSizeB(max_index);
-            scheduled_packets.release_times(scheduled_packet_index + 1) = available_packets.release_times(max_index);
-            scheduled_packets.corresponding_frames_index(scheduled_packet_index + 1) = available_packets.corresponding_frames_index(max_index);
-            scheduled_packets.corresponding_frame_number_of_packets_per_frame(scheduled_packet_index + 1) = available_packets.corresponding_frame_number_of_packets_per_frame(max_index);
-            scheduled_packets.deadlines(scheduled_packet_index + 1) = available_packets.deadlines(max_index);
-            scheduled_packets.values(scheduled_packet_index + 1) = available_packets.values(max_index);
-            scheduled_packets.user_id(scheduled_packet_index + 1) = available_packets.user_id(max_index);
-            
-            current_time_instance = current_time_instance + slot_length;
-            temp_packet_index = temp_packet_index + 1;
-            scheduled_packet_index = scheduled_packet_index + 1;
-        else
-            dropped_packets.packet_id(dropped_packet_index + 1) = available_packets.packet_id(max_index);
-            dropped_packets.corresponding_frameSizeB(dropped_packet_index + 1) = available_packets.corresponding_frameSizeB(max_index);
-            dropped_packets.release_times(dropped_packet_index + 1) = available_packets.release_times(max_index);
-            dropped_packets.corresponding_frames_index(dropped_packet_index + 1) = available_packets.corresponding_frames_index(max_index);
-            dropped_packets.corresponding_frame_number_of_packets_per_frame(dropped_packet_index + 1) = available_packets.corresponding_frame_number_of_packets_per_frame(max_index);
-            dropped_packets.deadlines(dropped_packet_index + 1) = available_packets.deadlines(max_index);
-            dropped_packets.values(scheduled_packet_index + 1) = available_packets.values(max_index);
-            dropped_packets.user_id(dropped_packet_index + 1) = available_packets.user_id(max_index);
-            
-            temp_packet_index = temp_packet_index + 1;
-            dropped_packet_index = dropped_packet_index + 1;
-        end
-        available_packets.packet_id = [available_packets.packet_id(1:max_index -1); available_packets.packet_id(max_index +1:end)];
-        available_packets.corresponding_frameSizeB = [available_packets.corresponding_frameSizeB(1:max_index -1); available_packets.corresponding_frameSizeB(max_index +1:end)];
-        available_packets.release_times = [available_packets.release_times(1:max_index -1); available_packets.release_times(max_index +1:end)];
-        available_packets.corresponding_frames_index = [available_packets.corresponding_frames_index(1:max_index -1); available_packets.corresponding_frames_index(max_index +1:end)];
-        available_packets.corresponding_frame_number_of_packets_per_frame = [available_packets.corresponding_frame_number_of_packets_per_frame(1:max_index -1); available_packets.corresponding_frame_number_of_packets_per_frame(max_index +1:end)];
-        available_packets.deadlines = [available_packets.deadlines(1:max_index -1); available_packets.deadlines(max_index +1:end)];
-        available_packets.values = [available_packets.values(1:max_index -1); available_packets.values(max_index +1:end)];
-        available_packets.user_id = [available_packets.user_id(1:max_index -1); available_packets.user_id(max_index +1:end)];
+current_time_instance = ceil(packets_ordered.release_times(temp_packet_index)/slot_length)*slot_length;
+
+while(temp_packet_index < total_number_of_packets)
+
+    if(current_time_instance < packets_ordered.release_times(temp_available_packet_index) && isempty(available_packet_queue))
+        current_time_instance = ceil(packets_ordered.release_times(temp_available_packet_index)/slot_length)*slot_length;
+    end
     
-    else
-        %These packets are sorted in increasing order of deadlines
-        packets_ordered.available_packets = find(find(packets_ordered.release_times <= current_time_instance) > packet_exclusion_index);
-        available_packets.values = packets_ordered.values(packets_ordered.available_packets);
-        available_packets.packet_id = packets_ordered.packet_id(packets_ordered.available_packets);
-        available_packets.release_times = packets_ordered.release_times(packets_ordered.available_packets);
-        available_packets.corresponding_frameSizeB = packets_ordered.corresponding_frameSizeB(packets_ordered.available_packets);
-        available_packets.deadlines = packets_ordered.deadlines(packets_ordered.available_packets);
-        available_packets.corresponding_frame_number_of_packets_per_frame = packets_ordered.corresponding_frame_number_of_packets_per_frame(packets_ordered.available_packets);
-        available_packets.corresponding_frames_index = packets_ordered.corresponding_frames_index(packets_ordered.available_packets);
-        available_packets.user_id = packets_ordered.user_id(packets_ordered.available_packets);
+    while(temp_available_packet_index < total_number_of_packets)
+
+        if(packets_ordered.release_times(temp_available_packet_index) <= current_time_instance)
+           available_packet_queue = [available_packet_queue packets_ordered.values(temp_available_packet_index)];
+           available_packet_queue_ids = [available_packet_queue_ids packets_ordered.packet_id(temp_available_packet_index)];
+           temp_available_packet_index = temp_available_packet_index + 1;
+        else
+            break;
+        end
         
-        available_packet_number = length(available_packets.release_times);
+    end
 
-        while (q <= available_packet_number) %Iterating through all the available packets
-            [max_val, max_index] = max(available_packets.values);
-            if(available_packets.deadlines(1) >= current_time_instance + slot_length) %The deadline is later than the potential slotted time for a particular packet
-                if ( available_packets.values(1) >= max_val/alpha ) % Weight_e >= Weight_MaxW/alpha
-                    scheduled_packets.packet_id(scheduled_packet_index + 1) = available_packets.packet_id(1);
-                    scheduled_packets.corresponding_frameSizeB(scheduled_packet_index + 1) = available_packets.corresponding_frameSizeB(1);
-                    scheduled_packets.release_times(scheduled_packet_index + 1) = available_packets.release_times(1);
-                    scheduled_packets.corresponding_frames_index(scheduled_packet_index + 1) = available_packets.corresponding_frames_index(1);
-                    scheduled_packets.corresponding_frame_number_of_packets_per_frame(scheduled_packet_index + 1) = available_packets.corresponding_frame_number_of_packets_per_frame(1);
-                    scheduled_packets.deadlines(scheduled_packet_index + 1) = available_packets.deadlines(1);
-                    scheduled_packets.values(scheduled_packet_index + 1) = available_packets.values(1);
-                    scheduled_packets.user_id(scheduled_packet_index + 1) = available_packets.user_id(1);
-            
-                    current_time_instance = current_time_instance + slot_length;
-                    temp_packet_index = temp_packet_index + 1;
-                    scheduled_packet_index = scheduled_packet_index + 1;
-                    q = q + 1;
-                    available_packets.packet_id = available_packets.packet_id(2:end);
-                    available_packets.corresponding_frameSizeB = available_packets.corresponding_frameSizeB(2:end);
-                    available_packets.release_times = available_packets.release_times(2:end);
-                    available_packets.corresponding_frames_index = available_packets.corresponding_frames_index(2:end);
-                    available_packets.corresponding_frame_number_of_packets_per_frame = available_packets.corresponding_frame_number_of_packets_per_frame(2:end);
-                    available_packets.deadlines = available_packets.deadlines(2:end);
-                    available_packets.values = available_packets.values(2:end);
-                    available_packets.user_id = available_packets.user_id(2:end);
+    if(~isempty(available_packet_queue))
+        [max_packet_value, max_packet_index] = max(available_packet_queue);
+        if available_packet_queue(head_index) >= available_packet_queue(max_packet_index)/alpha       % Weight_e >= Weight_MaxW/alpha
+            if(packets_ordered.deadlines(available_packet_queue_ids(head_index)) >= current_time_instance + slot_length)
+                scheduled_packets.packet_id(scheduled_packet_index + 1) = packets_ordered.packet_id(available_packet_queue_ids(head_index));
+                scheduled_packets.corresponding_frameSizeB(scheduled_packet_index + 1) = packets_ordered.corresponding_frameSizeB(available_packet_queue_ids(head_index));
+                scheduled_packets.release_times(scheduled_packet_index + 1) = packets_ordered.release_times(available_packet_queue_ids(head_index));
+                scheduled_packets.corresponding_frames_index(scheduled_packet_index + 1) = packets_ordered.corresponding_frames_index(available_packet_queue_ids(head_index));
+                scheduled_packets.corresponding_frame_number_of_packets_per_frame(scheduled_packet_index + 1) = packets_ordered.corresponding_frame_number_of_packets_per_frame(available_packet_queue_ids(head_index));
+                scheduled_packets.deadlines(scheduled_packet_index + 1) = packets_ordered.deadlines(available_packet_queue_ids(head_index));
+                scheduled_packets.values(scheduled_packet_index + 1) = packets_ordered.values(available_packet_queue_ids(head_index));
+                scheduled_packets.user_id(scheduled_packet_index + 1) = packets_ordered.user_id(available_packet_queue_ids(head_index));
 
-                else
-                    scheduled_packets.packet_id(scheduled_packet_index + 1) = available_packets.packet_id(max_index);
-                    scheduled_packets.corresponding_frameSizeB(scheduled_packet_index + 1) = available_packets.corresponding_frameSizeB(max_index);
-                    scheduled_packets.release_times(scheduled_packet_index + 1) = available_packets.release_times(max_index);
-                    scheduled_packets.corresponding_frames_index(scheduled_packet_index + 1) = available_packets.corresponding_frames_index(max_index);
-                    scheduled_packets.corresponding_frame_number_of_packets_per_frame(scheduled_packet_index + 1) = available_packets.corresponding_frame_number_of_packets_per_frame(max_index);
-                    scheduled_packets.deadlines(scheduled_packet_index + 1) = available_packets.deadlines(max_index);
-                    scheduled_packets.values(scheduled_packet_index + 1) = available_packets.values(max_index);
-                    scheduled_packets.user_id(scheduled_packet_index + 1) = available_packets.user_id(max_index);
-            
-                    current_time_instance = current_time_instance + slot_length;
-                    temp_packet_index = temp_packet_index + 1;
-                    scheduled_packet_index = scheduled_packet_index + 1;
-                    q = q + 1;
-                    available_packets.packet_id = [available_packets.packet_id(1:max_index -1); available_packets.packet_id(max_index +1:end)];
-                    available_packets.corresponding_frameSizeB = [available_packets.corresponding_frameSizeB(1:max_index -1); available_packets.corresponding_frameSizeB(max_index +1:end)];
-                    available_packets.release_times = [available_packets.release_times(1:max_index -1); available_packets.release_times(max_index +1:end)];
-                    available_packets.corresponding_frames_index = [available_packets.corresponding_frames_index(1:max_index -1); available_packets.corresponding_frames_index(max_index +1:end)];
-                    available_packets.corresponding_frame_number_of_packets_per_frame = [available_packets.corresponding_frame_number_of_packets_per_frame(1:max_index -1); available_packets.corresponding_frame_number_of_packets_per_frame(max_index +1:end)];
-                    available_packets.deadlines = [available_packets.deadlines(1:max_index -1); available_packets.deadlines(max_index +1:end)];
-                    available_packets.values = [available_packets.values(1:max_index -1); available_packets.values(max_index +1:end)];
-                    available_packets.user_id = [available_packets.user_id(1:max_index -1); available_packets.user_id(max_index +1:end)];
-                end
+                current_time_instance = current_time_instance + slot_length;
+                temp_packet_index = temp_packet_index + 1;
+                scheduled_packet_index = scheduled_packet_index + 1;
+            else
+                dropped_packets.packet_id(dropped_packet_index + 1) = packets_ordered.packet_id(available_packet_queue_ids(head_index));
+                dropped_packets.corresponding_frameSizeB(dropped_packet_index + 1) = packets_ordered.corresponding_frameSizeB(available_packet_queue_ids(head_index));
+                dropped_packets.release_times(dropped_packet_index + 1) = packets_ordered.release_times(available_packet_queue_ids(head_index));
+                dropped_packets.corresponding_frames_index(dropped_packet_index + 1) = packets_ordered.corresponding_frames_index(available_packet_queue_ids(head_index));
+                dropped_packets.corresponding_frame_number_of_packets_per_frame(dropped_packet_index + 1) = packets_ordered.corresponding_frame_number_of_packets_per_frame(available_packet_queue_ids(head_index));
+                dropped_packets.deadlines(dropped_packet_index + 1) = packets_ordered.deadlines(available_packet_queue_ids(head_index));
+                dropped_packets.values(scheduled_packet_index + 1) = packets_ordered.values(available_packet_queue_ids(head_index));
+                dropped_packets.user_id(dropped_packet_index + 1) = packets_ordered.user_id(available_packet_queue_ids(head_index));
 
-
-            else %The deadline is earlier than the potential slotted time for a particular packet and hence the packets need to be dropped
-
-                dropped_packets.packet_id(dropped_packet_index + 1) = available_packets.packet_id(1);
-                dropped_packets.corresponding_frameSizeB(dropped_packet_index + 1) = available_packets.corresponding_frameSizeB(1);
-                dropped_packets.release_times(dropped_packet_index + 1) = available_packets.release_times(1);
-                dropped_packets.corresponding_frames_index(dropped_packet_index + 1) = available_packets.corresponding_frames_index(1);
-                dropped_packets.corresponding_frame_number_of_packets_per_frame(dropped_packet_index + 1) = available_packets.corresponding_frame_number_of_packets_per_frame(1);
-                dropped_packets.deadlines(dropped_packet_index + 1) = available_packets.deadlines(1);
-                dropped_packets.values(scheduled_packet_index + 1) = available_packets.values(1);
-                dropped_packets.user_id(dropped_packet_index + 1) = available_packets.user_id(1);
-            
                 temp_packet_index = temp_packet_index + 1;
                 dropped_packet_index = dropped_packet_index + 1;
-                q = q + 1;
-                available_packets.packet_id = available_packets.packet_id(2:end);
-                available_packets.corresponding_frameSizeB = available_packets.corresponding_frameSizeB(2:end);
-                available_packets.release_times = available_packets.release_times(2:end);
-                available_packets.corresponding_frames_index = available_packets.corresponding_frames_index(2:end);
-                available_packets.corresponding_frame_number_of_packets_per_frame = available_packets.corresponding_frame_number_of_packets_per_frame(2:end);
-                available_packets.deadlines = available_packets.deadlines(2:end);
-                available_packets.values = available_packets.values(2:end);
-                available_packets.user_id = available_packets.user_id(2:end);
             end
-        end  
-        %packet_exclusion_index = packet_exclusion_index + q;
+            available_packet_queue(head_index) = [];
+            available_packet_queue_ids(head_index) = [];
+
+        else
+            if(packets_ordered.deadlines(available_packet_queue_ids(max_packet_index)) >= current_time_instance + slot_length)
+                scheduled_packets.packet_id(scheduled_packet_index + 1) = packets_ordered.packet_id(available_packet_queue_ids(max_packet_index));
+                scheduled_packets.corresponding_frameSizeB(scheduled_packet_index + 1) = packets_ordered.corresponding_frameSizeB(available_packet_queue_ids(max_packet_index));
+                scheduled_packets.release_times(scheduled_packet_index + 1) = packets_ordered.release_times(available_packet_queue_ids(max_packet_index));
+                scheduled_packets.corresponding_frames_index(scheduled_packet_index + 1) = packets_ordered.corresponding_frames_index(available_packet_queue_ids(max_packet_index));
+                scheduled_packets.corresponding_frame_number_of_packets_per_frame(scheduled_packet_index + 1) = packets_ordered.corresponding_frame_number_of_packets_per_frame(available_packet_queue_ids(max_packet_index));
+                scheduled_packets.deadlines(scheduled_packet_index + 1) = packets_ordered.deadlines(available_packet_queue_ids(max_packet_index));
+                scheduled_packets.values(scheduled_packet_index + 1) = packets_ordered.values(available_packet_queue_ids(max_packet_index));
+                scheduled_packets.user_id(scheduled_packet_index + 1) = packets_ordered.user_id(available_packet_queue_ids(max_packet_index));
+
+                current_time_instance = current_time_instance + slot_length;
+                temp_packet_index = temp_packet_index + 1;
+                scheduled_packet_index = scheduled_packet_index + 1;
+            else
+                dropped_packets.packet_id(dropped_packet_index + 1) = packets_ordered.packet_id(available_packet_queue_ids(max_packet_index));
+                dropped_packets.corresponding_frameSizeB(dropped_packet_index + 1) = packets_ordered.corresponding_frameSizeB(available_packet_queue_ids(max_packet_index));
+                dropped_packets.release_times(dropped_packet_index + 1) = packets_ordered.release_times(available_packet_queue_ids(max_packet_index));
+                dropped_packets.corresponding_frames_index(dropped_packet_index + 1) = packets_ordered.corresponding_frames_index(available_packet_queue_ids(max_packet_index));
+                dropped_packets.corresponding_frame_number_of_packets_per_frame(dropped_packet_index + 1) = packets_ordered.corresponding_frame_number_of_packets_per_frame(available_packet_queue_ids(max_packet_index));
+                dropped_packets.deadlines(dropped_packet_index + 1) = packets_ordered.deadlines(available_packet_queue_ids(max_packet_index));
+                dropped_packets.values(scheduled_packet_index + 1) = packets_ordered.values(available_packet_queue_ids(max_packet_index));
+                dropped_packets.user_id(dropped_packet_index + 1) = packets_ordered.user_id(available_packet_queue_ids(max_packet_index));
+
+                temp_packet_index = temp_packet_index + 1;
+                dropped_packet_index = dropped_packet_index + 1;
+            end
+            available_packet_queue(max_packet_index) = [];
+            available_packet_queue_ids(max_packet_index) = [];
+        end
     end
 end
-total_value = sum(scheduled_packets.values);
+ total_value = sum(scheduled_packets.values);
 end
+

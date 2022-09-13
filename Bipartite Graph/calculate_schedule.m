@@ -25,11 +25,11 @@ end
 
 
 %number of users
-N = 20;
+N = 10;
 alpha = 3;
 L = length(theFiles);
 %number of simulation insances
-S = 100;
+S = 1;
 %slot length in ms(depends on the SCS)
 slot_length = 0.125;
 %maximum release time in ms
@@ -108,14 +108,14 @@ for data_point = 1:N
 
 
 
+        dropped_pack_mwbm = 0;
 
-
-        %results_packet_drop.max_weight{data_point,sim_instance}.val = length(dropped_packets_mw.packet_id)/length(packets_ordered_mw.packet_id);
-        %results_packet_drop.edf_alpha{data_point,sim_instance}.val = length(dropped_packets_ealpha.packet_id)/length(packets_ordered_ealpha.packet_id);
-        %results_packet_drop.fcfs_sj{data_point,sim_instance}.val = length(dropped_packets_fcfs.packet_id)/length(packets_ordered_fcfs.packet_id);
+        results_packet_drop.max_weight{data_point,sim_instance}.val = 1- (length(scheduled_packets_mw.packet_id)/length(packets_ordered_mw.packet_id));
+        results_packet_drop.edf_alpha{data_point,sim_instance}.val = 1- (length(scheduled_packets_ealpha.packet_id)/length(packets_ordered_ealpha.packet_id));
+        results_packet_drop.fcfs_sj{data_point,sim_instance}.val = 1- (length(scheduled_packets_fcfs.packet_id)/length(packets_ordered_fcfs.packet_id));
         total_pack = length(packets_ordered_mw.packet_id);
         for i = 1:total_pack
-            if ~ismember(packets_ordered_mw.packet_id(i),mj)
+            if ~ismember(packets_ordered_mw.packet_id(i),mi)
                 dropped_pack_mwbm = dropped_pack_mwbm +1;
             end
         end   

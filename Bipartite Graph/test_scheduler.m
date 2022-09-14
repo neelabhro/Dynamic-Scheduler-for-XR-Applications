@@ -17,11 +17,11 @@ end
 throughput = 0;
 
 %number of users
-N = 10;
+N = 20;
 alpha = 3;
 L = length(theFiles);
 %number of simulation insances
-S = 2;
+S = 50;
 %slot length in ms(depends on the SCS)
 slot_length = 0.125;
 %maximum release time in ms
@@ -102,9 +102,9 @@ for data_point = 1:N
         results_packet_drop.max_weight{data_point,sim_instance}.val = 1- (length(scheduled_packets_mw.packet_id)/length(packets_ordered_mw.packet_id));
         results_packet_drop.edf_alpha{data_point,sim_instance}.val = 1- (length(scheduled_packets_ealpha.packet_id)/length(packets_ordered_ealpha.packet_id));
         results_packet_drop.fcfs_sj{data_point,sim_instance}.val = 1- (length(scheduled_packets_fcfs.packet_id)/length(packets_ordered_fcfs.packet_id));
-        total_pack = length(packets_ordered_mw.packet_id);
+        total_pack = length(packets_ordered_fcfs.packet_id);
         for i = 1:total_pack
-            if ~ismember(packets_ordered_mw.packet_id(i),mi)
+            if ~ismember(packets_ordered_fcfs.packet_id(i),mi)
                 dropped_pack_mwbm = dropped_pack_mwbm +1;
             end
         end   
@@ -114,6 +114,14 @@ for data_point = 1:N
         results_system_time.max_weight{data_point,sim_instance}.val = mean(scheduled_packets_mw.slotted_times - scheduled_packets_mw.release_times);
         results_system_time.edf_alpha{data_point,sim_instance}.val = mean(scheduled_packets_ealpha.slotted_times - scheduled_packets_ealpha.release_times);
         results_system_time.fcfs_sj{data_point,sim_instance}.val = mean(scheduled_packets_fcfs.slotted_times - scheduled_packets_fcfs.release_times);
+        
+        mwbm_sys_time = zeros(length(mi),1);
+        for j = 1:length(mi)
+            mwbm_sys_time(j) = mwbm_sys_time(j) + ((mj(j)*slot_length) - packets_ordered_fcfs.release_times(mi(j)));
+        end
+
+        results_system_time.bipartite_matching{data_point,sim_instance}.val = mean(mwbm_sys_time);
+        
         fprintf('Simulations running for: data point %i and simulation instace %i.\n',data_point,sim_instance);
 
     end

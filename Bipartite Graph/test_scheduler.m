@@ -17,11 +17,11 @@ end
 throughput = 0;
 
 %number of users
-N = 12;
-alpha = 1;
+N = 10;
+alpha = 3;
 L = length(theFiles);
 %number of simulation insances
-S = 10;
+S = 2;
 %slot length in ms(depends on the SCS)
 slot_length = 0.125;
 %maximum release time in ms
@@ -97,9 +97,8 @@ for data_point = 1:N
 
 
 
-
+%       Calculating packet drop data
         dropped_pack_mwbm = 0;
-
         results_packet_drop.max_weight{data_point,sim_instance}.val = 1- (length(scheduled_packets_mw.packet_id)/length(packets_ordered_mw.packet_id));
         results_packet_drop.edf_alpha{data_point,sim_instance}.val = 1- (length(scheduled_packets_ealpha.packet_id)/length(packets_ordered_ealpha.packet_id));
         results_packet_drop.fcfs_sj{data_point,sim_instance}.val = 1- (length(scheduled_packets_fcfs.packet_id)/length(packets_ordered_fcfs.packet_id));
@@ -110,6 +109,11 @@ for data_point = 1:N
             end
         end   
         results_packet_drop.bipartite_matching{data_point,sim_instance}.val = dropped_pack_mwbm/length(packets_ordered_mw.packet_id);
+        
+%       Calculating system time data
+        results_system_time.max_weight{data_point,sim_instance}.val = mean(scheduled_packets_mw.slotted_times - scheduled_packets_mw.release_times);
+        results_system_time.edf_alpha{data_point,sim_instance}.val = mean(scheduled_packets_ealpha.slotted_times - scheduled_packets_ealpha.release_times);
+        results_system_time.fcfs_sj{data_point,sim_instance}.val = mean(scheduled_packets_fcfs.slotted_times - scheduled_packets_fcfs.release_times);
         fprintf('Simulations running for: data point %i and simulation instace %i.\n',data_point,sim_instance);
 
     end

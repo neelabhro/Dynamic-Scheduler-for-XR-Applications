@@ -71,7 +71,7 @@ temp_packet_index = 1;
 scheduled_packet_index = 0;
 dropped_packet_index = 0;
 temp_available_packet_index = 1;
-edf_index = 1;
+%edf_index = 1;
 
 
 current_time_instance = ceil(packets_ordered.release_times(temp_packet_index)/slot_length)*slot_length;
@@ -154,7 +154,7 @@ while(temp_packet_index < total_number_of_packets)
                 dropped_packets.corresponding_frames_index(dropped_packet_index + 1) = packets_ordered.corresponding_frames_index(available_packet_queue_ids(max_packet_index));
                 dropped_packets.corresponding_frame_number_of_packets_per_frame(dropped_packet_index + 1) = packets_ordered.corresponding_frame_number_of_packets_per_frame(available_packet_queue_ids(max_packet_index));
                 dropped_packets.deadlines(dropped_packet_index + 1) = packets_ordered.deadlines(available_packet_queue_ids(max_packet_index));
-                dropped_packets.values(scheduled_packet_index + 1) = packets_ordered.values(available_packet_queue_ids(max_packet_index));
+                dropped_packets.values(dropped_packet_index + 1) = packets_ordered.values(available_packet_queue_ids(max_packet_index));
                 dropped_packets.user_id(dropped_packet_index + 1) = packets_ordered.user_id(available_packet_queue_ids(max_packet_index));
 
                 temp_packet_index = temp_packet_index + 1;

@@ -64,6 +64,7 @@ packets_ordered.user_id = corresponding_frame_user_id;
 %max_weight_queue = java.util.PriorityQueue;
 max_weight_queue = [];
 max_weight_queue_ids = [];
+current_time_instance = 0;
 scheduled_packets = struct;
 dropped_packets = struct;
 temp_packet_index = 1;
@@ -72,7 +73,7 @@ dropped_packet_index = 0;
 temp_max_q_packet_index = 1;
 
 
-current_time_instance = ceil(packets_ordered.release_times(temp_packet_index)/slot_length)*slot_length;
+%current_time_instance = ceil(packets_ordered.release_times(temp_packet_index)/slot_length)*slot_length;
 
 while(temp_packet_index < total_number_of_packets)
 
@@ -107,6 +108,8 @@ while(temp_packet_index < total_number_of_packets)
             scheduled_packets.user_id(scheduled_packet_index + 1) = packets_ordered.user_id(max_weight_queue_ids(packet_index));
             
             current_time_instance = current_time_instance + slot_length;
+            scheduled_packets.slotted_times(scheduled_packet_index + 1) = current_time_instance;
+
             temp_packet_index = temp_packet_index + 1;
             scheduled_packet_index = scheduled_packet_index + 1;
         else
@@ -116,7 +119,7 @@ while(temp_packet_index < total_number_of_packets)
             dropped_packets.corresponding_frames_index(dropped_packet_index + 1) = packets_ordered.corresponding_frames_index(max_weight_queue_ids(packet_index));
             dropped_packets.corresponding_frame_number_of_packets_per_frame(dropped_packet_index + 1) = packets_ordered.corresponding_frame_number_of_packets_per_frame(max_weight_queue_ids(packet_index));
             dropped_packets.deadlines(dropped_packet_index + 1) = packets_ordered.deadlines(max_weight_queue_ids(packet_index));
-            dropped_packets.values(scheduled_packet_index + 1) = packets_ordered.values(max_weight_queue_ids(packet_index));
+            dropped_packets.values(dropped_packet_index + 1) = packets_ordered.values(max_weight_queue_ids(packet_index));
             dropped_packets.user_id(dropped_packet_index + 1) = packets_ordered.user_id(max_weight_queue_ids(packet_index));
             
             temp_packet_index = temp_packet_index + 1;

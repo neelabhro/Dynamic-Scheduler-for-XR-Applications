@@ -8,6 +8,14 @@ end
 %The number of rows correspond to the total number of packets
 %The number of columns correspond to the time slots required
 
+%Bipartite_Graph_Matrix is populated with packets from users
+%incrementally(first packets from User 1 will fill up, followed by User 2
+%and so on. The first non zero value is when the packet first becomes
+%available. That index multiplied by the slot length provides the
+%approximate time that packet became available.
+
+% Mi is the packet number
+% Mj*time slot provides the final time slot in which the packet was slotted
 bipartite_graph_matrix = zeros(bipartite_graph_dimension, ceil(latest_frame/slot_length));
 
 matrix_pointer = 1;
@@ -21,6 +29,3 @@ for user_id = 1:n
     end
 end
 end
-
-% Mi is the packet number
-% Mj*time slot provides the final time slot in which the packet was slotted

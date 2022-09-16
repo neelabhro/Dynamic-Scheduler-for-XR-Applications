@@ -1,8 +1,10 @@
 function [] = plot_weighted_throughput(results)
 
-algos = {'bipartite_matching','edf_alpha', 'maximum_weight' 'fcfs_sj'};
+algos = {'bipartite_matching','edf_alpha', 'max_weight','fcfs_sj'};
+%algos = {'bipartite_matching', 'maximum_weight' 'fcfs_sj'};
 
-legend_names = {'MWBM', 'EDF alpha', 'Maximum Weight' 'FCFS'};
+legend_names = {'MWBM', 'EDF alpha', 'Max Weight', 'FCFS'};
+%legend_names = {'MWBM', 'Maximum Weight' 'FCFS'};
 [data_point_length, number_of_runs] = size(results.(algos{2}));
 dataPoints = 1:1:data_point_length;
 
@@ -14,7 +16,8 @@ std_dev = zeros(1,data_point_length);
 
 styleGraphs = {'-','--', ':', '-.', ':'};
 styleNames = {'*','o','s', 'd', 'x'};
-%styleColors = [204 102 0;0, 204, 0;0 128 255]./255;
+%styleColors = [204 102 0; 0, 204, 0; 0 128 255]./255;
+styleColors = [1 0 0; 0 1 0; 0 0 1; 1 0 1; 1 0 1];
 
 algo_index = [1,2,3,4];
 figure
@@ -44,11 +47,11 @@ for algo = 1:length(algo_index)
     
     
     if(errorbars)
-        hp_1 = errorbar(dataPoints,weigthed_throughput,std_err.*p(2),strcat(styleGraphs{1},styleNames{algo_index(algo)}),'LineWidth',1.5,'MarkerSize',8,'Color','black');
+        hp_1 = errorbar(dataPoints,weigthed_throughput,std_err.*p(2),strcat(styleGraphs{1},styleNames{algo_index(algo)}),'LineWidth',1.5,'MarkerSize',8,'Color',styleColors(algo,:));
         %errorbar(dataPoints,weigthed_throughput,std_err.*p(2),strcat(styleGraphs{1},styleNames{algo_index(algo)}),'LineWidth',1.5,'MarkerSize',8,'Color',styleColors(algo,:))
         hold on
     else
-        hp_1 = plot(dataPoints,weigthed_throughput,strcat(styleGraphs{1},styleNames{algo_index(algo)}),'LineWidth',1.5,'MarkerSize',8,'Color','black');
+        hp_1 = plot(dataPoints,weigthed_throughput,strcat(styleGraphs{1},styleNames{algo_index(algo)}),'LineWidth',1.5,'MarkerSize',8,'Color',styleColors(algo,:));
         %plot(dataPoints,weigthed_throughput,strcat(styleGraphs{1},styleNames{algo_index(algo)}),'LineWidth',1.5,'MarkerSize',8,'Color',styleColors(algo,:))
         hold on
     end
@@ -59,8 +62,8 @@ for algo = 1:length(algo_index)
 end
 
 xlabel('Number of UEs')
-ylabel('Weighted throughput')
-axis([1 20 1 170000]);
+ylabel('Competitive Ratio (Weighted throughput)')
+axis([1 10 1 2]);
 aghsnd=legend(h',legend_names{algo_index});
 grid on
 

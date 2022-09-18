@@ -17,11 +17,11 @@ end
 throughput = 0;
 
 %number of users
-N = 10;
+N = 20;
 alpha = 3;
 L = length(theFiles);
 %number of simulation insances
-S = 20;
+S = 60;
 %slot length in ms(depends on the SCS)
 slot_length = 0.125;
 %maximum release time in ms
@@ -29,9 +29,10 @@ max_release_time = 10;
 %packetsize in B
 packet_size = 1500;
 values_range = [10 50];
+mlve_factor = 1;
 
 for l = 1 : L
-    users_original{l}.number_of_packets_per_frame = ceil(users_original{l}.frameSizeB./packet_size); 
+    users_original{l}.number_of_packets_per_frame = ceil(users_original{l}.frameSizeB./(packet_size*mlve_factor)); 
 end
 
 for data_point = 1:N    
@@ -41,9 +42,9 @@ for data_point = 1:N
             truncuated_length = ceil(users_original{l}.nf/1000);
             trace_slice_lower_bound = randi([1 users_original{l}.nf-truncuated_length],1,1);
             trace_slice_upper_bound = trace_slice_lower_bound + truncuated_length;
-            users_truncuated{n}.avgframeSizekB = users_original{l}.avgframeSizekB;
+            users_truncuated{n}.avgframeSizekB = (users_original{l}.avgframeSizekB)./mlve_factor;
             users_truncuated{n}.fps = users_original{l}.fps;
-            users_truncuated{n}.frameSizeB = users_original{l}.frameSizeB(trace_slice_lower_bound:trace_slice_upper_bound-1);
+            users_truncuated{n}.frameSizeB = (users_original{l}.frameSizeB(trace_slice_lower_bound:trace_slice_upper_bound-1))./mlve_factor;
             users_truncuated{n}.frametype = users_original{l}.frametype(trace_slice_lower_bound:trace_slice_upper_bound-1);
             users_truncuated{n}.info = users_original{l}.info;
             users_truncuated{n}.nf = truncuated_length;

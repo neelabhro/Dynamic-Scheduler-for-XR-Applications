@@ -23,8 +23,8 @@ alpha2 = 2;
 alpha3 = 3;
 
 L = length(theFiles);
-%number of simulation insances
-S = 60;
+%number of simulation instances
+S = 8;
 %slot length in ms(depends on the SCS)
 slot_length = 0.125;
 %maximum release time in ms
@@ -36,8 +36,8 @@ values_range = [10 50];
 for l = 1 : L
     users_original{l}.number_of_packets_per_frame = ceil(users_original{l}.frameSizeB./packet_size); 
 end
-
-for data_point = 1:N    
+current_data_point = 5;
+for data_point = 5:5:N
     for sim_instance = 1:S        
         for n = 1 : N
             l = randi(L);
@@ -84,19 +84,19 @@ for data_point = 1:N
         %all_packets_value = maximum_achievable_throughput(users,selected_users,data_point);
         %results_throughput.bipartite_matching{data_point,sim_instance}.val = bipartite_val/bipartite_val;
         
-        results_throughput.max_weight{data_point,sim_instance}.val = max_weight_val/max_weight_val;
-        results_throughput.edf_alpha1{data_point,sim_instance}.val =  max_weight_val/edf_alpha_val1;
-        results_throughput.edf_alpha2{data_point,sim_instance}.val =  max_weight_val/edf_alpha_val2;
-        results_throughput.edf_alpha3{data_point,sim_instance}.val =  max_weight_val/edf_alpha_val3;
+        results_throughput.max_weight{current_data_point,sim_instance}.val = max_weight_val/max_weight_val;
+        results_throughput.edf_alpha1{current_data_point,sim_instance}.val =  max_weight_val/edf_alpha_val1;
+        results_throughput.edf_alpha2{current_data_point,sim_instance}.val =  max_weight_val/edf_alpha_val2;
+        results_throughput.edf_alpha3{current_data_point,sim_instance}.val =  max_weight_val/edf_alpha_val3;
 
 
 
 %       Calculating packet drop data
         %dropped_pack_mwbm = 0;
-        results_packet_drop.max_weight{data_point,sim_instance}.val = 1- (length(scheduled_packets_mw.packet_id)/length(packets_ordered_mw.packet_id));
-        results_packet_drop.edf_alpha1{data_point,sim_instance}.val = 1- (length(scheduled_packets_ealpha1.packet_id)/length(packets_ordered_ealpha1.packet_id));
-        results_packet_drop.edf_alpha2{data_point,sim_instance}.val = 1- (length(scheduled_packets_ealpha2.packet_id)/length(packets_ordered_ealpha2.packet_id));
-        results_packet_drop.edf_alpha3{data_point,sim_instance}.val = 1- (length(scheduled_packets_ealpha3.packet_id)/length(packets_ordered_ealpha3.packet_id));
+        results_packet_drop.max_weight{current_data_point,sim_instance}.val = 1- (length(scheduled_packets_mw.packet_id)/length(packets_ordered_mw.packet_id));
+        results_packet_drop.edf_alpha1{current_data_point,sim_instance}.val = 1- (length(scheduled_packets_ealpha1.packet_id)/length(packets_ordered_ealpha1.packet_id));
+        results_packet_drop.edf_alpha2{current_data_point,sim_instance}.val = 1- (length(scheduled_packets_ealpha2.packet_id)/length(packets_ordered_ealpha2.packet_id));
+        results_packet_drop.edf_alpha3{current_data_point,sim_instance}.val = 1- (length(scheduled_packets_ealpha3.packet_id)/length(packets_ordered_ealpha3.packet_id));
         %total_pack = length(packets_ordered_fcfs.packet_id);
 %         for i = 1:total_pack
 %             if ~ismember(packets_ordered_fcfs.packet_id(i),mi)
@@ -106,10 +106,10 @@ for data_point = 1:N
 %         results_packet_drop.bipartite_matching{data_point,sim_instance}.val = dropped_pack_mwbm/length(packets_ordered_fcfs.packet_id);
 %         
 %       Calculating system time data
-        results_system_time.max_weight{data_point,sim_instance}.val = mean(scheduled_packets_mw.slotted_times - scheduled_packets_mw.release_times);
-        results_system_time.edf_alpha1{data_point,sim_instance}.val = mean(scheduled_packets_ealpha1.slotted_times - scheduled_packets_ealpha1.release_times);
-        results_system_time.edf_alpha2{data_point,sim_instance}.val = mean(scheduled_packets_ealpha2.slotted_times - scheduled_packets_ealpha2.release_times);
-        results_system_time.edf_alpha3{data_point,sim_instance}.val = mean(scheduled_packets_ealpha3.slotted_times - scheduled_packets_ealpha3.release_times);
+        results_system_time.max_weight{current_data_point,sim_instance}.val = mean(scheduled_packets_mw.slotted_times - scheduled_packets_mw.release_times);
+        results_system_time.edf_alpha1{current_data_point,sim_instance}.val = mean(scheduled_packets_ealpha1.slotted_times - scheduled_packets_ealpha1.release_times);
+        results_system_time.edf_alpha2{current_data_point,sim_instance}.val = mean(scheduled_packets_ealpha2.slotted_times - scheduled_packets_ealpha2.release_times);
+        results_system_time.edf_alpha3{current_data_point,sim_instance}.val = mean(scheduled_packets_ealpha3.slotted_times - scheduled_packets_ealpha3.release_times);
         
 %         mwbm_sys_time = zeros(length(mi),1);
 %         for j = 1:length(mi)
@@ -118,7 +118,8 @@ for data_point = 1:N
 %         %results_system_time.bipartite_matching{data_point,sim_instance}.val = mean(mj*slot_length - packets_ordered_fcfs.release_times(mi));  
 %         results_system_time.bipartite_matching{data_point,sim_instance}.val = mean(mwbm_sys_time);
         
-        fprintf('Simulations running for: data point %i and simulation instace %i.\n',data_point,sim_instance);
+        fprintf('Simulations running for: data point %i and simulation instace %i.\n',current_data_point,sim_instance);
 
     end
+    current_data_point = current_data_point + 5;
 end

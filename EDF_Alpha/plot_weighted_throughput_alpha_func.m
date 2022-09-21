@@ -5,19 +5,21 @@ algos = {'edf_alpha1', 'edf_alpha2', 'edf_alpha3'};
 
 legend_names = {'#Users = 5', '#Users = 10', '#Users = 15', '#Users = 20'};
 %legend_names = {'MWBM', 'Maximum Weight' 'FCFS'};
-[data_point_length, number_of_runs] = size(results.(algos{2}));
+[data_point_length, ~] = size(results.(algos{2}));
 dataPoints = 5:5:data_point_length;
 results_temp = results;
 results_temp.max_weight = results_temp.max_weight(dataPoints,:);
 results_temp.edf_alpha1 = results_temp.edf_alpha1(dataPoints,:);
 results_temp.edf_alpha2 = results_temp.edf_alpha2(dataPoints,:);
 results_temp.edf_alpha3 = results_temp.edf_alpha3(dataPoints,:);
+results_temp.edf_alpha4 = results_temp.edf_alpha4(dataPoints,:);
+results_temp.edf_alpha5 = results_temp.edf_alpha5(dataPoints,:);
 
-weighted_results.user5 = [results_temp.edf_alpha1(1,:); results_temp.edf_alpha2(1,:); results_temp.edf_alpha3(1,:)];
-weighted_results.user10 = [results_temp.edf_alpha1(2,:); results_temp.edf_alpha2(2,:); results_temp.edf_alpha3(2,:)];
-weighted_results.user15 = [results_temp.edf_alpha1(3,:); results_temp.edf_alpha2(3,:); results_temp.edf_alpha3(3,:)];
-weighted_results.user20 = [results_temp.edf_alpha1(4,:); results_temp.edf_alpha2(4,:); results_temp.edf_alpha3(4,:)];
-dataPoints = 1:3;
+weighted_results.user5 = [results_temp.edf_alpha1(1,:); results_temp.edf_alpha2(1,:); results_temp.edf_alpha3(1,:) ; results_temp.edf_alpha4(1,:) ; results_temp.edf_alpha5(1,:)];
+weighted_results.user10 = [results_temp.edf_alpha1(2,:); results_temp.edf_alpha2(2,:); results_temp.edf_alpha3(2,:) ; results_temp.edf_alpha4(2,:) ; results_temp.edf_alpha5(2,:)];
+weighted_results.user15 = [results_temp.edf_alpha1(3,:); results_temp.edf_alpha2(3,:); results_temp.edf_alpha3(3,:); results_temp.edf_alpha4(3,:); results_temp.edf_alpha5(3,:)];
+weighted_results.user20 = [results_temp.edf_alpha1(4,:); results_temp.edf_alpha2(4,:); results_temp.edf_alpha3(4,:); results_temp.edf_alpha4(4,:); results_temp.edf_alpha5(4,:)];
+dataPoints = 1:5;
 algos = {'user5', 'user10', 'user15', 'user20' };
 [data_point_length, number_of_runs] = size(weighted_results.(algos{2}));
 
@@ -77,7 +79,7 @@ grid on
 
 xlabel('\alpha')
 ylabel('Weighted Throughput Ratio wrt Max Weight')
-axis([1 3 1 1.5]);
+axis([1 5 0.9 1.5]);
 aghsnd=legend(h',legend_names{algo_index});
 %legend('MWBM', 'EDF-\alpha(3)', 'Max Weight', 'FCFS', 'EDF');
 grid on

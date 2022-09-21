@@ -21,10 +21,12 @@ N = 20;
 alpha1 = 1;
 alpha2 = 2;
 alpha3 = 3;
+alpha4 = 4;
+alpha5 = 5;
 
 L = length(theFiles);
 %number of simulation instances
-S = 8;
+S = 120;
 %slot length in ms(depends on the SCS)
 slot_length = 0.125;
 %maximum release time in ms
@@ -79,7 +81,8 @@ for data_point = 5:5:N
         [edf_alpha_val1, scheduled_packets_ealpha1, dropped_packets_ealpha1, packets_ordered_ealpha1] = edf_alpha(users,selected_users,data_point,slot_length,alpha1);
         [edf_alpha_val2, scheduled_packets_ealpha2, dropped_packets_ealpha2, packets_ordered_ealpha2] = edf_alpha(users,selected_users,data_point,slot_length,alpha2);
         [edf_alpha_val3, scheduled_packets_ealpha3, dropped_packets_ealpha3, packets_ordered_ealpha3] = edf_alpha(users,selected_users,data_point,slot_length,alpha3);
-
+        [edf_alpha_val4, scheduled_packets_ealpha4, dropped_packets_ealpha4, packets_ordered_ealpha4] = edf_alpha(users,selected_users,data_point,slot_length,alpha4);
+        [edf_alpha_val5, scheduled_packets_ealpha5, dropped_packets_ealpha5, packets_ordered_ealpha5] = edf_alpha(users,selected_users,data_point,slot_length,alpha5);
         
         %all_packets_value = maximum_achievable_throughput(users,selected_users,data_point);
         %results_throughput.bipartite_matching{data_point,sim_instance}.val = bipartite_val/bipartite_val;
@@ -88,6 +91,8 @@ for data_point = 5:5:N
         results_throughput.edf_alpha1{current_data_point,sim_instance}.val =  max_weight_val/edf_alpha_val1;
         results_throughput.edf_alpha2{current_data_point,sim_instance}.val =  max_weight_val/edf_alpha_val2;
         results_throughput.edf_alpha3{current_data_point,sim_instance}.val =  max_weight_val/edf_alpha_val3;
+        results_throughput.edf_alpha4{current_data_point,sim_instance}.val =  max_weight_val/edf_alpha_val4;
+        results_throughput.edf_alpha5{current_data_point,sim_instance}.val =  max_weight_val/edf_alpha_val5;
 
 
 
@@ -97,6 +102,8 @@ for data_point = 5:5:N
         results_packet_drop.edf_alpha1{current_data_point,sim_instance}.val = 1- (length(scheduled_packets_ealpha1.packet_id)/length(packets_ordered_ealpha1.packet_id));
         results_packet_drop.edf_alpha2{current_data_point,sim_instance}.val = 1- (length(scheduled_packets_ealpha2.packet_id)/length(packets_ordered_ealpha2.packet_id));
         results_packet_drop.edf_alpha3{current_data_point,sim_instance}.val = 1- (length(scheduled_packets_ealpha3.packet_id)/length(packets_ordered_ealpha3.packet_id));
+        results_packet_drop.edf_alpha4{current_data_point,sim_instance}.val = 1- (length(scheduled_packets_ealpha4.packet_id)/length(packets_ordered_ealpha4.packet_id));
+        results_packet_drop.edf_alpha5{current_data_point,sim_instance}.val = 1- (length(scheduled_packets_ealpha5.packet_id)/length(packets_ordered_ealpha5.packet_id));
         %total_pack = length(packets_ordered_fcfs.packet_id);
 %         for i = 1:total_pack
 %             if ~ismember(packets_ordered_fcfs.packet_id(i),mi)
@@ -110,7 +117,8 @@ for data_point = 5:5:N
         results_system_time.edf_alpha1{current_data_point,sim_instance}.val = mean(scheduled_packets_ealpha1.slotted_times - scheduled_packets_ealpha1.release_times);
         results_system_time.edf_alpha2{current_data_point,sim_instance}.val = mean(scheduled_packets_ealpha2.slotted_times - scheduled_packets_ealpha2.release_times);
         results_system_time.edf_alpha3{current_data_point,sim_instance}.val = mean(scheduled_packets_ealpha3.slotted_times - scheduled_packets_ealpha3.release_times);
-        
+        results_system_time.edf_alpha4{current_data_point,sim_instance}.val = mean(scheduled_packets_ealpha4.slotted_times - scheduled_packets_ealpha4.release_times);
+        results_system_time.edf_alpha5{current_data_point,sim_instance}.val = mean(scheduled_packets_ealpha5.slotted_times - scheduled_packets_ealpha5.release_times);        
 %         mwbm_sys_time = zeros(length(mi),1);
 %         for j = 1:length(mi)
 %             mwbm_sys_time(j) = mwbm_sys_time(j) + ((mj(j)*slot_length) - (find(bipartite_graph_matrix(mi(j),:),1)-1)*slot_length);

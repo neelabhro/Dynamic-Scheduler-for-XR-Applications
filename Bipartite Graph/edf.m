@@ -22,7 +22,7 @@ for user_id = 1:data_point
 
 end
 
-%Ordering in the frame level based on earliest deadline policy
+%Ordering in the frame level
 [frames_ordered.release_times, frames_ordered.index] = sort(all_frames_together_release_times);
 frames_ordered.frameSizeB = all_frames_together_frameSizeB(frames_ordered.index);
 frames_ordered.number_of_packets_per_frame = all_frames_together_number_of_packets_per_frame(frames_ordered.index);
@@ -76,13 +76,13 @@ temp_available_packet_index = 1;
 
 current_time_instance = ceil(packets_ordered.release_times(temp_packet_index)/slot_length)*slot_length;
 
-while(temp_packet_index < total_number_of_packets)
+while(temp_packet_index <= total_number_of_packets)
 
     if(current_time_instance < packets_ordered.release_times(temp_available_packet_index) && isempty(available_packet_queue))
         current_time_instance = ceil(packets_ordered.release_times(temp_available_packet_index)/slot_length)*slot_length;
     end
 
-    while(temp_available_packet_index < total_number_of_packets)
+    while(temp_available_packet_index <= total_number_of_packets)
 
         if(packets_ordered.release_times(temp_available_packet_index) <= current_time_instance)
             available_packet_queue = [available_packet_queue packets_ordered.values(temp_available_packet_index)];
@@ -93,6 +93,10 @@ while(temp_packet_index < total_number_of_packets)
             break;
         end
 
+    end
+
+    if(temp_available_packet_index > total_number_of_packets)
+        temp_available_packet_index = total_number_of_packets;
     end
 
     if(~isempty(available_packet_queue))
@@ -119,7 +123,7 @@ while(temp_packet_index < total_number_of_packets)
             dropped_packets.corresponding_frames_index(dropped_packet_index + 1) = packets_ordered.corresponding_frames_index(available_packet_queue_ids(edf_index));
             dropped_packets.corresponding_frame_number_of_packets_per_frame(dropped_packet_index + 1) = packets_ordered.corresponding_frame_number_of_packets_per_frame(available_packet_queue_ids(edf_index));
             dropped_packets.deadlines(dropped_packet_index + 1) = packets_ordered.deadlines(available_packet_queue_ids(edf_index));
-            dropped_packets.values(scheduled_packet_index + 1) = packets_ordered.values(available_packet_queue_ids(edf_index));
+            dropped_packets.values(dropped_packet_index + 1) = packets_ordered.values(available_packet_queue_ids(edf_index));
             dropped_packets.user_id(dropped_packet_index + 1) = packets_ordered.user_id(available_packet_queue_ids(edf_index));
 
             temp_packet_index = temp_packet_index + 1;

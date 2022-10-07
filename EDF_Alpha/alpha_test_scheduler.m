@@ -78,11 +78,11 @@ for data_point = 5:5:N
         %call all scheduling algorithms and save corresponding results
         %[bipartite_val, mi, mj] = bipartite_matching(bipartite_graph_matrix);  
         [max_weight_val, scheduled_packets_mw, dropped_packets_mw, packets_ordered_mw] = max_weight(users,selected_users,data_point,slot_length);
-        [edf_alpha_val1, scheduled_packets_ealpha1, dropped_packets_ealpha1, packets_ordered_ealpha1] = edf_alpha(users,selected_users,data_point,slot_length,alpha1);
-        [edf_alpha_val2, scheduled_packets_ealpha2, dropped_packets_ealpha2, packets_ordered_ealpha2] = edf_alpha(users,selected_users,data_point,slot_length,alpha2);
-        [edf_alpha_val3, scheduled_packets_ealpha3, dropped_packets_ealpha3, packets_ordered_ealpha3] = edf_alpha(users,selected_users,data_point,slot_length,alpha3);
-        [edf_alpha_val4, scheduled_packets_ealpha4, dropped_packets_ealpha4, packets_ordered_ealpha4] = edf_alpha(users,selected_users,data_point,slot_length,alpha4);
-        [edf_alpha_val5, scheduled_packets_ealpha5, dropped_packets_ealpha5, packets_ordered_ealpha5] = edf_alpha(users,selected_users,data_point,slot_length,alpha5);
+        [edf_alpha_val1, scheduled_packets_ealpha1, dropped_packets_ealpha1, packets_ordered_ealpha1, scheduled_packet_index_ealpha1, max_pack_counter1, edf_pack_counter1] = edf_alpha(users,selected_users,data_point,slot_length,alpha1);
+        [edf_alpha_val2, scheduled_packets_ealpha2, dropped_packets_ealpha2, packets_ordered_ealpha2, scheduled_packet_index_ealpha2, max_pack_counter2, edf_pack_counter2] = edf_alpha(users,selected_users,data_point,slot_length,alpha2);
+        [edf_alpha_val3, scheduled_packets_ealpha3, dropped_packets_ealpha3, packets_ordered_ealpha3, scheduled_packet_index_ealpha3, max_pack_counter3, edf_pack_counter3] = edf_alpha(users,selected_users,data_point,slot_length,alpha3);
+        [edf_alpha_val4, scheduled_packets_ealpha4, dropped_packets_ealpha4, packets_ordered_ealpha4, scheduled_packet_index_ealpha4, max_pack_counter4, edf_pack_counter4] = edf_alpha(users,selected_users,data_point,slot_length,alpha4);
+        [edf_alpha_val5, scheduled_packets_ealpha5, dropped_packets_ealpha5, packets_ordered_ealpha5, scheduled_packet_index_ealpha5, max_pack_counter5, edf_pack_counter5] = edf_alpha(users,selected_users,data_point,slot_length,alpha5);
         
         %all_packets_value = maximum_achievable_throughput(users,selected_users,data_point);
         %results_throughput.bipartite_matching{data_point,sim_instance}.val = bipartite_val/bipartite_val;
@@ -94,8 +94,17 @@ for data_point = 5:5:N
         results_throughput.edf_alpha4{current_data_point,sim_instance}.val =  max_weight_val/edf_alpha_val4;
         results_throughput.edf_alpha5{current_data_point,sim_instance}.val =  max_weight_val/edf_alpha_val5;
 
+        results_probability_max_weight.edf_alpha1{current_data_point,sim_instance}.val = max_pack_counter1/scheduled_packet_index_ealpha1;
+        results_probability_max_weight.edf_alpha2{current_data_point,sim_instance}.val = max_pack_counter2/scheduled_packet_index_ealpha2;
+        results_probability_max_weight.edf_alpha3{current_data_point,sim_instance}.val = max_pack_counter3/scheduled_packet_index_ealpha3;
+        results_probability_max_weight.edf_alpha4{current_data_point,sim_instance}.val = max_pack_counter4/scheduled_packet_index_ealpha4;
+        results_probability_max_weight.edf_alpha5{current_data_point,sim_instance}.val = max_pack_counter5/scheduled_packet_index_ealpha5;
 
-
+        results_probability_edf.edf_alpha1{current_data_point,sim_instance}.val = edf_pack_counter1/scheduled_packet_index_ealpha1;
+        results_probability_edf.edf_alpha2{current_data_point,sim_instance}.val = edf_pack_counter2/scheduled_packet_index_ealpha2;
+        results_probability_edf.edf_alpha3{current_data_point,sim_instance}.val = edf_pack_counter3/scheduled_packet_index_ealpha3;
+        results_probability_edf.edf_alpha4{current_data_point,sim_instance}.val = edf_pack_counter4/scheduled_packet_index_ealpha4;
+        results_probability_edf.edf_alpha5{current_data_point,sim_instance}.val = edf_pack_counter5/scheduled_packet_index_ealpha5;        
 %       Calculating packet drop data
         %dropped_pack_mwbm = 0;
         results_packet_drop.max_weight{current_data_point,sim_instance}.val = 1- (length(scheduled_packets_mw.packet_id)/length(packets_ordered_mw.packet_id));

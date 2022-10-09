@@ -1,24 +1,11 @@
-%function [] = plot_system_time_SCS(results1, results2, results3)
+function [] = plot_edf_probability(results)
 
-% algos = {'edf_alpha1', 'edf_alpha2', 'edf_alpha3'};
-% %algos = {'bipartite_matching', 'maximum_weight' 'fcfs_sj'};
-% 
-% legend_names = {'#Users = 5', '#Users = 10', '#Users = 15', '#Users = 20'};
-% %legend_names = {'MWBM', 'Maximum Weight' 'FCFS'};
-% [data_point_length, ~] = size(results.(algos{2}));
-clc;
-close all;
-legend_names = {'TS = 0.0625ms / SCS = 240KHz', 'TS = 0.125ms / SCS = 120KHz', 'TS = 0.25ms / SCS = 60KHz'};
-results.minumumSL = load('Thesis_Data/point625ms.mat');
-results.minumumSL = results.minumumSL.results_system_time.fcfs_sj;
-results.mediumSL = load('Thesis_Data/125ms.mat');
-results.mediumSL = results.mediumSL.results_system_time.fcfs_sj;
+algos = {'max_weight', 'edf'};
+%algos = {'bipartite_matching', 'maximum_weight' 'fcfs_sj'};
 
-results.maximumSL = load('Thesis_Data/25ms.mat');
-results.maximumSL = results.maximumSL.results_system_time.fcfs_sj;
-
-algos = {'minumumSL', 'mediumSL', 'maximumSL'};
-[data_point_length, number_of_runs] = size(results.(algos{2}));
+legend_names = {'X = Maximum weighted packet', 'X = Earliest deadline packet'};
+%legend_names = {'MWBM', 'Maximum Weight' 'FCFS'};
+[data_point_length, number_of_runs] = size(results.(algos{1}));
 dataPoints = 1:2:data_point_length*2;
 
 p=norminv([0.05 0.95],0,1);
@@ -31,7 +18,7 @@ std_dev = zeros(1,data_point_length);
 styleGraphs = {'-','--', ':', '-.', ':'};
 styleNames = {'*','o','s', 'd', 'x'};
 styleColors = [204 102 0; 0 204 0; 0 128 255; 128 0 255; 0 255 128 ]./255;
-algo_index = [1,2,3];
+algo_index = [1,2];
 figure
 
 h=[];
@@ -77,11 +64,10 @@ aghsnd=legend(h',legend_names{algo_index});
 grid on
 
 xlabel('Number of Users')
-ylabel('Average system time (ms)')
-axis([1 20 1 25]);
-%title('EDF-\alpha(3)')
+ylabel('Probability of scheduling packet X')
+axis([1 20 0 1]);
 %aghsnd=legend(h',legend_names{algo_index});
 %legend('MWBM', 'EDF-\alpha(3)', 'Max Weight', 'FCFS', 'EDF');
 grid on
 
-%end
+end

@@ -1,12 +1,12 @@
 function [] = plot_system_time(results)
 
-algos = {'bipartite_matching','edf_alpha', 'max_weight','fcfs_sj'};
+algos = {'bipartite_matching','edf_alpha', 'max_weight','fcfs_sj', 'edf'};
 %algos = {'bipartite_matching', 'maximum_weight' 'fcfs_sj'};
 
-legend_names = {'MWBM', 'EDF alpha', 'Max Weight', 'FCFS'};
+legend_names = {'MWBM', 'EDF-\alpha(\alpha = 3)', 'Max Weight', 'FCFS', 'EDF'};
 %legend_names = {'MWBM', 'Maximum Weight' 'FCFS'};
 [data_point_length, number_of_runs] = size(results.(algos{2}));
-dataPoints = 1:1:data_point_length;
+dataPoints = 1:2:data_point_length*2;
 
 p=norminv([0.05 0.95],0,1);
 errorbars = true;
@@ -16,10 +16,9 @@ std_dev = zeros(1,data_point_length);
 
 styleGraphs = {'-','--', ':', '-.', ':'};
 styleNames = {'*','o','s', 'd', 'x'};
-%styleColors = [204 102 0; 0, 204, 0; 0 128 255]./255;
-styleColors = [1 0 0; 0 1 0; 0 0 1; 1 0 1; 1 0 1];
-
-algo_index = [1,2,3,4];
+styleColors = [204 102 0; 0 204 0; 0 128 255; 128 0 255; 0 255 128 ]./255;
+%styleColors = [1 0 0; 0 1 0; 0 0 1; 0 1 1; 1 0 1];
+algo_index = [1,2,3,4,5];
 figure
 
 h=[];
@@ -30,7 +29,8 @@ max_ax=[];
 for algo = 1:length(algo_index)
     
     i = algo_index(algo);
-    h_algo = plot(-1,-1,['k' strcat(styleGraphs{1},styleNames{algo_index(algo)})]);
+    %h_algo = plot(-1,-1,['k' strcat(styleGraphs{1},styleNames{algo_index(algo)}, styleColors(algo,:))]);
+    h_algo = plot(-1,-1,['k' strcat(styleGraphs{1},styleNames{algo_index(algo)})],'Color',styleColors(algo,:));
     %hi = semilogy(-1,-1,style_names{i});
     hold on
     h(algo) = h_algo;
@@ -61,9 +61,9 @@ for algo = 1:length(algo_index)
     index=index+1;
 end
 
-xlabel('Number of UEs')
+xlabel('Number of Users')
 ylabel('Average System Time (ms)')
-axis([1 10 0 25]);
+axis([1 20 0 16]);
 aghsnd=legend(h',legend_names{algo_index});
 grid on
 

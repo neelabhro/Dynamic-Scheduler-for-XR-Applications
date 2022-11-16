@@ -10,36 +10,10 @@ function [val m1 m2 mi]=bipartite_matching(varargin)
 % from A such that each row and column get only a single non-zero but the
 % sum of all the chosen elements is as large as possible.
 %
-% This function is slightly atypical for a graph library, because it will
-% be primarily used on rectangular inputs.  However, these rectangular
-% inputs model bipartite graphs and we take advantage of that stucture in
-% this code.  The underlying graph adjency matrix is 
-%   G = spaugment(A,0); 
-% where A is the rectangular input to the bipartite_matching function.
-%
-% Matlab already has the dmperm function that computes a maximum
-% cardinality matching between the rows and the columns.  This function
-% gives us the maximum weight matching instead.  For unweighted graphs, the
-% two functions are equivalent.
-%
-% Note: If ei and ej contain duplicate edges, the results of this function
-% are incorrect.
-%
-% See also DMPERM
-%
 % Example:
 %   A = rand(10,8); % bipartite matching between random data
 %   [val mi mj] = bipartite_matching(A);
 %   val
-
-% David F. Gleich and Ying Wang
-% Copyright, Stanford University, 2008-2009
-% Computational Approaches to Digital Stewardship
-
-% 2008-04-24: Initial coding (copy from Ying Wang matching_sparse_mex.cpp)
-% 2008-11-15: Added triplet input/output
-% 2009-04-30: Modified for gaimc library
-% 2009-05-15: Fixed error with empty inputs and triple added example.
 
 [rp ci ai tripi n m] = bipartite_matching_setup(varargin{:});
 
